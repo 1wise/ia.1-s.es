@@ -1,0 +1,2 @@
+mkdir /mnt/pop && mount /dev/LATUYA /mnt/pop && mount /dev/LATUYA /mnt/pop/boot && mount /dev/LATUYA && mount --bind /run /mnt/pop/run && mount --make-slave /mnt/pop/run &&  chroot /mnt/pop /bin/bash 
+

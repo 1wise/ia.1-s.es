@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta charset="UTF-8">
+<meta name="Peticion a Stability" content="charset=utf-8;">
+<meta http-equiv="Cache-Control" content-type="text/html" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<link href="stylesheet.css" rel="stylesheet" type="text/css"></link>
+  <title>Peticion a la API de Stability</title>
+  <script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrls = urlParams.get('image_urls');
+
+    function updateIframe() {
+      var iframe = document.getElementById("log-iframe");
+      iframe.src = iframe.src;
+      return true;
+    }
+
+    document.getElementById('request-form').addEventListener('submit', function () {
+      var iframe = document.querySelector('iframe');
+      iframe.src = iframe.src;
+    });
+    const form = document.getElementById('request-form');
+
+   // Save form data to sessionStorage when submitting the form
+    form.addEventListener('submit', () => {
+      for (const element of form.elements) {
+      if (element.name) {
+          localStorage.setItem(element.name, element.value);
+        }
+      }
+    });
+
+   // Restore form data from sessionStorage when the page is reloaded
+   window.addEventListener('load', () => {
+    for (const element of form.elements) {
+      if (element.name && localStorage.getItem(element.name)) {
+        element.value = localStorage.getItem(element.name);
+      }
+     }
+   });
+
+   if (imageUrls) {
+    const imageUrlArray = imageUrls.split(',');
+    const imageContainer = document.getElementById('image-container');
+
+    imageUrlArray.forEach((imageUrl) => {
+      const imageElement = document.createElement('img');
+      imageElement.src = imageUrl;
+      imageElement.alt = 'Imagen Generada';
+      imageElement.style.margin = '5px'; // Add some margin between images
+
+      imageContainer.appendChild(imageElement);
+      });
+    }
+  });
+
+  function calculateHeight() {
+    var height = parseInt(document.getElementById("height").value);
+    var width = parseInt(document.getElementById("width").value);
+
+    var closestIntHeight = calculateClosestInt(height);
+    document.getElementById("height").value = closestIntHeight;
+
+    var result = closestIntHeight * width;
+    document.getElementById("result").value = result;
+  }
+
+  function calculateWidth() {
+    var height = parseInt(document.getElementById("height").value);
+    var width = parseInt(document.getElementById("width").value);
+
+    var closestIntWidth = calculateClosestInt(width);
+    document.getElementById("width").value = closestIntWidth;
+
+    var result = height * closestIntWidth;
+    document.getElementById("result").value = result;
+  }
+
+  function calculateClosestInt(num) {
+    var quotient = Math.floor(num / 64);
+    var remainder = num % 64;
+
+    if (remainder == 0) {
+      var closestInt = num;
+    } else {
+      var closestIntFloor = quotient * 64;
+      var closestIntCeil = (quotient + 1) * 64;
+
+      if (Math.abs(closestIntFloor - num) < Math.abs(closestIntCeil - num)) {
+        var closestInt = closestIntFloor;
+      } else {
+        var closestInt = closestIntCeil;
+      }
+    }
+
+    return closestInt;
+  }
+ </script>
+</head>
+<body>
+   <form accept-charset="UTF-8" id="request-form" method="post" action="stability.php" enctype="multipart/form-data" onsubmit="return updateIframe()"> 
+    <label style="font-size:18pt; font-family: Arial;" for="title"><b>Peticion a la API Stability.ai</b></label>
+     <a href="@URLDIRIMAGENESindex.php" target="_blank" rel="noreferrer noopener" class="button-link"><b>!!! Todas Las Imagenes !!!</b></a>
+     <p><textarea class="comment" type="text" id="prompt" name="prompt" placeholder="Entrada de texto. El tamaño de imagenes tiene que ser en multiples de 64. Para 768 maquinas: 589,824 ≤ altura x anchura ≤ 1,048,576 . El resto de maquinas: 262,144 ≤ altura x anchura ≤ 1,048,576" required></textarea></p>
+     <label style="font-size:14pt; font-family:Arial" for="weight"><b>nº Samples:</b>&nbsp;</label>
+    <select style="font-size:14pt; width:55px;" id="numimg" name="numimg">
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+    </select>
+    <input type="text" id="emrem" style="font-size: 14pt; font-family: Arial; width: 485px" name="emrem" placeholder="Usuario, para el nombre de archivo y info .png"><br>
+    <label style="font-size: 14pt; font-family: Arial;" for="weight"><b>Peso 0 a 1:</b>&nbsp;</label>
+    <input type="text" maxlength="3" style="width: 62px; font-size: 14pt " id="weight" name="weight" value="0.5">
+    <label  style="font-size: 14pt; font-family: Arial;" for="cfg_scale">&nbsp;<b>Escala Cfg 0 a 35:</b>&nbsp;</label>
+    <input type="text" maxlength="3" style="width: 70px; font-size: 14pt;" id="cfg_scale" name="cfg_scale" value="7">
+    <label style="font-size: 14pt; font-family: Arial;" for="width">&nbsp;<b>Pasos 10 a 150:</b>&nbsp;</label>
+    <input type="text" maxlength="3" style="width: 70px; font-size: 14pt;" id="steps" name="steps" value="50"><br>
+    <label  style="font-size: 14pt; font-family:Arial;" for="height"><b>Alto:</b>&nbsp;</label>
+    <input type="text" maxlength="5" style="width: 60px; font-size: 14pt; font-family: Arial;" id="height" name="height" value="512">
+    <button type="button"style="font-size: 14pt; font-family: Arial; width: 70px;" onclick="calculateHeight()">Hx64</button>&nbsp;
+    <label  style="font-size: 14pt; font-family: Arial" for="width">&nbsp;<b>Ancho:</b>&nbsp;</label>
+    <input type="text" maxlength="5" style="width: 60px; font-family: Arial; font-size: 14pt;" id="width" name="width" value="512">
+    <button type="button"style="font-size: 14pt; font-family: Arial; width: 70px;" onclick="calculateWidth()">Wx64</button>&nbsp;
+    <label for="result"  style="font-size: 14pt; font-family: Arial;">&nbsp;<b>Alto x Ancho:</b>&nbsp;</label>
+    <input type="text" id="result" name="result" maxlength="11" style="width:95px; font-family:Arial; font-size:14pt;" readonly><br>
+    <input type="text" maxlength="15" style="width: 120px; font-size: 14pt; font-family: Arial;" id="seed" name="seed" placeholder="Seed">
+    <select style="font-family: Arial; font-size: 14pt; width: 265px;" id="model" name="model">
+      <option value="stable-diffusion-v1-5">Stable Diffusion v1.5</option>
+      <option value="stable-diffusion-v1">Stable Diffusion v1.4</option>
+      <option value="stable-diffusion-512-v2-1">Stable Diffusion 512 v2.1</option>
+      <option value="stable-diffusion-768-v2-1">Stable Diffusion 768 v2.1</option>
+      <option value="stable-diffusion-512-v2-0">Stable Diffusion 512 v2.0</option>
+      <option value="stable-diffusion-768-v2-0">Stable Diffusion 768 v2.0</option>
+      <option value="stable-inpainting-512-v2-0">Stable Inpainting v2.0</option>
+       <option value="stable-inpainting-v1-0">Stable Inpainting v1.0</option>
+      <option value="esrgan-v1-x2plus">Real-ESRGAN_x2</option>
+    </select>
+     <select style="font-family:Arial; font-size:14pt; width:265px;" id="sampler" name="sampler">
+      <option value="I">Seleccion Automatica</option>
+      <option value="K_DPM_2_ANCESTRAL">K_DPM_2_ANCESTRAL</option>
+      <option value="K_DPMPP_2S_ANCESTRAL">K_DPMPP_2S_ANCESTRAL</option>
+      <option value="DDIM">DDIM</option>
+      <option value="K_DPM_2">K_DPM_2</option>
+      <option value="K_DPMPP_2M">K_DPMPP_2M</option>
+      <option value="K_EULER">K_EULER</option>
+      <option value="K_HUEN">K_HUEN</option>
+      <option value="K_LMS">K_LMS</option>
+    </select><br> 
+    <select style="font-family:Arial; font-size:14pt; width:160px;" id="clip" name="clip">
+      <option value="NONE">NONE</option>
+      <option value="FAST_BLUE">FAST_BLUE</option>
+      <option value="FAST_GREEN">FAST_GREEN</option>
+      <option value="SIMPLE">SIMPLE</option>
+      <option value="SLOW">SLOW</option>
+      <option value="SLOWER">SLOWER</option>
+      <option value="SLOWEST">SLOWEST</option>
+    </select>&nbsp;
+    <input style="font-size:12pt; font-family: Arial; width:490px; height:22px;" type="text" id="api-key" name="api-key" placeholder="Clave API https://beta.dreamstudio.ai" required>
+    <p><input style="text-align:center; width:665px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Generar imagen NO darle cuando esta en ROJO"></p>
+    <div id="loader" class="loader" style="display: none;"></div>
+    <script>
+    function showLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'block';
+      submitButton.style.backgroundColor = 'red';
+    }
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'none';
+      submitButton.style.backgroundColor = ''; // Reset the background color
+    }
+      document.getElementById('request-form').addEventListener('submit', function() {
+        showLoader();
+        var iframe = document.querySelector('iframe');
+        iframe.src = iframe.src;  
+    });
+
+    document.getElementById('log-iframe').addEventListener('load', function() {
+      hideLoader();  
+   });
+   </script>  
+  </form>
+  <iframe id="log-iframe" class="log-iframe" src="@URLAPP@NOMSTABILITYLOG" title="Stability Registro"></iframe><br>
+  <div id="image-container"></div>
+  <script>
+    if (imageUrl) {
+      const imageElement = document.createElement('img');
+      imageElement.src = imageUrl;
+      imageElement.alt = 'Imagen Generada';
+
+      const imageContainer = document.getElementById('image-container');
+      imageContainer.appendChild(imageElement);
+    };
+    // Observe the iframe src changes
+    const iframe = document.getElementById('log-iframe');
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+          hideLoader();
+        }
+      });
+    });
+    observer.observe(iframe, { attributes: true }); 
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+ufw disable
+ufw enable
+ufw default allow outgoing
+ufw default deny incoming
+ufw allow 22/tcp
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 8069/tcp
+ufw allow 8072/tcp
+ufw allow 20/tcp
+ufw allow 21/tcp
+ufw allow 38465:39595/tcp
+

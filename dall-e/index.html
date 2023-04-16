@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+<meta charset="UTF-8">
+<meta name="Peticion a Dall-e" content="width=device-width; height=device-height; charset=utf-8;">
+  <title>Peticion a  la API DALL-E</title>
+    <style>
+      .comment {
+        resize: none;
+        height: 440px;
+        width: 680px;
+      }
+      .button-link {
+        display: inline-block;
+        font-size: 16pt;
+        text-align: right;
+        color: #FFF;
+        background-color: #4CAF50;
+        border: none;
+        padding: 10px 20px;
+        text-decoration: none;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-left: 40px; 
+      }
+      .button-link:hover {
+         background-color: #45a049;
+      }
+  /* New styles for the loader */
+  .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+   </style>
+   <script>
+    // Dall-e2 form by 1wise.es
+    // http://ia.1-s.es
+    // http://1wise.es
+    //
+    // Last edit 06-04-03-2023 00:00
+    //
+   document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const imageUrls = urlParams.get('image_urls');
+
+    function updateIframe() {
+      var iframe = document.getElementById("log-iframe");
+      iframe.src = iframe.src;
+      return true;
+    }
+
+    document.getElementById('request-form').addEventListener('submit', function () {
+      var iframe = document.querySelector('iframe');
+      iframe.src = iframe.src;
+    });
+    const form = document.getElementById('request-form');
+
+   // Save form data to sessionStorage when submitting the form
+    form.addEventListener('submit', () => {
+      for (const element of form.elements) {
+      if (element.name) {
+          localStorage.setItem(element.name, element.value);
+        }
+    }
+  });
+
+  // Restore form data from sessionStorage when the page is reloaded
+  window.addEventListener('load', () => {
+    for (const element of form.elements) {
+      if (element.name && localStorage.getItem(element.name)) {
+        element.value = localStorage.getItem(element.name);
+      }
+    }
+  });
+
+  if (imageUrls) {
+    const imageUrlArray = imageUrls.split(',');
+    const imageContainer = document.getElementById('image-container');
+
+    imageUrlArray.forEach((imageUrl) => {
+      const imageElement = document.createElement('img');
+      imageElement.src = imageUrl;
+      imageElement.alt = 'Tu obra con Dall-e';
+      imageElement.style.margin = '5px'; // Add some margin between images
+
+      imageContainer.appendChild(imageElement);
+      });
+    }
+  });
+  </script>
+</head>
+<body>
+    <form accept-charset="UTF-8" id="request-form" method="post" action="dall-e2.php" enctype="multipart/form-data" onsubmit="return updateIframe()"> 
+    <h2>Peticion a la API DALL-E <a href="https://iabots.1-s.es/dall-e/imagenes/index.php" target="_blank" rel="noreferrer noopener" class="button-link">!!!!! Todas Las Imagenes !!!!!</a></h2>
+    
+    <textarea class="comment" type="text" style="font-size:14pt;" maxlength="998" id="prompt" name="prompt" placeholder="Entrada de texto" required></textarea><br><br>
+    <input style="text-align:left; width:680px; font-size:16pt;" type="text" id="emrem" name="emrem" placeholder="Usuario, orientativo para Dall-e"><br><br>
+
+    <b><label style="font-size:16pt;" for="numimg">Nº de Imagenes:</label></b>
+    <input type="text" maxlength="2" style="width:70px; font-size:16pt;" id="numimg" name="numimg" value="1">
+    <script>
+    function showLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'block';
+      submitButton.style.backgroundColor = 'red';
+//      submitButton.disabled = true; 
+    }
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'none';
+      submitButton.style.backgroundColor = ''; // Reset the background color
+//      submitButton.disabled = false;
+    }
+      document.getElementById('request-form').addEventListener('submit', function() {
+        showLoader();
+        var iframe = document.querySelector('iframe');
+        iframe.src = iframe.src;  
+    });
+
+    document.getElementById('log-iframe').addEventListener('load', function() {
+      hideLoader();  
+   });
+   </script>  
+    <select style="font-size:16pt;"  id="model" name="model">
+      <option value="image-alpha-001">image-alpha-001</option>
+      <option value="image-alpha-002">image-alpha-002</option>
+      <option value="image-alpha-003">image-alpha-003</option>
+      <option value="dall-e2">dall-e2</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+
+    <select style="font-size:16pt;" id="size" name="size">
+      <option value="256x256">256x256</option>
+      <option value="512x512">512x512</option>
+      <option value="1024x1024">1024x1024</option>
+    </select><br><br>
+
+    <b><input style="font-size:16pt;" id="submit" type="submit" name="submit" value="Generar Imagen"></b>
+    <div id="loader" class="loader" style="display: none;"></div>
+
+    &nbsp;
+    <b><label style="font-size:16pt;" for="api-key">API:</label></b>
+    <input style="width:450px; font-size:12pt;" type="text" id="api-key" name="api-key" placeholder="API Key" required><br><br>
+  </form>
+  <iframe id="log-iframe" src="https://iabots.1-s.es/dall-e/Dall-e2.log" height="200" width="680" title="Dall-e Registro"></iframe><br>
+  <div id="image-container"></div>
+
+  <script>
+  if (imageUrl) {
+    const imageElement = document.createElement('img');
+    imageElement.src = imageUrl;
+    imageElement.alt = 'Tu obra con Dall-e';
+    const imageContainer = document.getElementById('image-container');
+    imageContainer.appendChild(imageElement);
+  };
+    // Observe the iframe src changes
+    const iframe = document.getElementById('log-iframe');
+    const observer = new MutationObserver(function (mutations) {
+      mutations.forEach(function (mutation) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+          hideLoader();
+        }
+      });
+    });
+    observer.observe(iframe, { attributes: true }); 
+  </script>
+</body>
+</html>
+  

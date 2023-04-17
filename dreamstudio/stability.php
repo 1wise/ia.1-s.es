@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set('Europe/Madrid');
-global $emip, $imgUrl, $dirImg, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi, $mHost, $mUsr, $mPas, $mDe, $Bcc, $mMsg;
+global $emip, $imgUrl, $dirImg, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi, $mHost, $mUsr, $mPas, $mDe, $mBcc, $mMsg;
 
 require_once '@DIRYNOMSENSEMAIL';
 require_once '@DIRYNOMSENSESMS';
@@ -25,7 +25,7 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
     return $output;
 }
  if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] == true) {
-    global $emip, $imgUrl, $dirImg, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi, $mHost, $mUsr, $mPas, $mDe, $Bcc, $mMsg;
+    global $emip, $imgUrl, $dirImg, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi, $mHost, $mUsr, $mPas, $mDe, $mBcc, $mMsg;
 
     $emIp = $_SERVER['REMOTE_ADDR'];
     $emRem = $_POST['emrem'];

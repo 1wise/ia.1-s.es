@@ -56,12 +56,12 @@ function sense_mail($emIp, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $dirImg, $i
       $mail->Body = $emMsg;
       $mail->send();
       $mailLog  = ">".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$remMsg." - ".date('d-m-y H:i:s').PHP_EOL;
-      file_put_contents('@NOMESTABILITYMAILLOG', $mailLog, FILE_APPEND);
+      file_put_contents('@NOMSTABILITYMAILLOG', $mailLog, FILE_APPEND);
       echo " - Email enviado !!".PHP_EOL;
       ob_clean();
    } catch (Exception $e) {
        $mailLog  = ">>> ERROR >>>".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$remMsg." - ".date('d-m-y H:i:s').PHP_EOL;
-       file_put_contents('@NOMESTABILITYMAILLOG', $mailLog, FILE_APPEND);
+       file_put_contents('@NOMSTABILITYMAILLOG', $mailLog, FILE_APPEND);
        echo ' - Email no se a podido enviar. Error: ' . $mail->ErrorInfo . PHP_EOL;
        ob_clean();
    }

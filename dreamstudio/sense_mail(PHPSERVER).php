@@ -22,7 +22,7 @@ function sense_mail($emIp, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $dirImg, $i
          $emMsg .= "</body></html>";
 
          // Main header (multipart mandatory)
-         $emCap =  "From: " . $emEmp . " <" . $mDe . ">" . PHP_EOL;
+         $emCap =  "From: " . $emtoAi . " <" . $mDe . ">" . PHP_EOL;
          $emCap .= "Cc: " . PHP_EOL . "Bcc: " . $mBcc  . PHP_EOL;
          $emCap .= "MIME-Version: 1.0" . PHP_EOL;
          $emCap .= "Content-Type: multipart/mixed; boundary=\"" . $corAle . "\"" . PHP_EOL;

@@ -53,13 +53,13 @@ function sense_mail($emIp, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $dirImg, $i
          mail($emMai, $emAsu, $emCos, $emCap);
    
          $mailLog  = ">".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
-         file_put_contents('@NOMESTABILITYMAILLOG', $mailLog, FILE_APPEND); 
+         file_put_contents('@NOMSTABILITYMAILLOG', $mailLog, FILE_APPEND); 
          echo " - Email enviado !!".PHP_EOL;
          
       } catch (Exception $e) {
            $exep = "Excepción capturada: ".$e->getMessage()."\n";
            $mailLog  = "ERROR >>>".$exep."<< - >>".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
-           file_put_contents('@NOMESTABILITYMAILLOG', $mailLog, FILE_APPEND); 
+           file_put_contents('@NOMSTABILITYMAILLOG', $mailLog, FILE_APPEND); 
            echo '- Email no se a podido enviar. Error: ' . $mail->ErrorInfo . PHP_EOL;
       }
 }

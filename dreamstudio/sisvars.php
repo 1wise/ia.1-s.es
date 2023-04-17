@@ -1,5 +1,5 @@
 <?php
-global $imgUrl, $dirImg, $somApi, $mHost, $mUsr, $mPas, $mDe, $Bcc, $mMsg;
+global $imgUrl, $dirImg, $somApi, $mHost, $mUsr, $mPas, $mDe, $mBcc, $mMsg;
 
 $appUrl = "@URLAPP";
 $sitApp = "@URLSITAPP";

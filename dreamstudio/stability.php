@@ -135,16 +135,16 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
             $image_log .= $imgUrl.$nomImg."\n<ImagenUrl>\n";
            }
          }
-         $logon = "<Prompt>".PHP_EOL.$emDat.PHP_EOL."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <A> ".$emtoAi." <+> ".$emIp." <f> ".$finishReason."<->".$nowForm."<+> ;)".PHP_EOL."<ImagenUrl ..seed.png>".PHP_EOL;
+         $logon = "<Prompt>".PHP_EOL.$emDat.PHP_EOL."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <Peso> ".$weight." <CFG> ".$cfg_scale." <Pas> ".$steps." <Samp> ".$sampler." <Clip> ".$clip." <A> ".$emtoAi." <+>".$nowForm."<+> ;)".PHP_EOL."<ImagenUrl ..seed.png>".PHP_EOL;
          $logNow = $logon.$image_log.PHP_EOL;
          $temp = file_get_contents('@NOMSTABILITYLOG');
          $logFull = $logNow.$temp;
          file_put_contents('@NOMSTABILITYLOG', $logFull);
  } else {
-       echo 'Error: '.$httpcode.PHP_EOL;
-       $emIp = $_SERVER['REMOTE_ADDR'];
-       $logon = "<-->".$httpcode."<->".$seed.$emIp."<->".$emDat."<->".$model."<->".$height."x".$width."<->".$numImg."<->".$emtoAi."<->.".$finishReason."<->".$nowForm.PHP_EOL;
-       file_put_contents('@NOMSTABILITYLOG', $logon, FILE_APPEND); 
+         echo 'Error: '.$httpcode.PHP_EOL;
+         $emIp = $_SERVER['REMOTE_ADDR'];
+         $logon = "<-->".$httpcode."<->".$seed.$emIp."<->".$emDat."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <Peso> ".$weight." <CFG> ".$cfg_scale." <Pas> ".$steps." <Samp> ".$sampler." <Clip> ".$clip." <A> ".$emtoAi." <+>".$nowForm."<+> ;)".$finishReason."<->".$nowForm.PHP_EOL;
+         file_put_contents('@NOMSTABILITYLOG', $logon, FILE_APPEND); 
  }
 
  $aiRes = array(

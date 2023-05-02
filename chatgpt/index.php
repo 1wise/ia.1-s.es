@@ -1,32 +1,37 @@
 <?php
 global  $emRem, $emUsr, $model, $system_msg, $emIp, $aimPar, $aimSgem, $smsNum, $somApi;
-require_once './sense_mail.php';
-require_once './sense_sms.php';
+require_once '@DIRYNOMSENSEMAIL';
+require_once '@DIRYNOMSENSESMS';
 	// ChatGPT Form
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 08-04-2023 00:00
+	// Last edit 01-05-2023 00:00
 	//
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the form data
-    $somUsu = '';
-    $somPas = '';
+    $somUsu = '@SMSUSER';
+    $somPas = '@SMSPASSWORD';
     $somApi = base64_encode("$somUsu:$somPas");
-    $carReg = "./registros/";
+    $carReg = "@DIRREGISTROS";
     $aiCry = $_POST['aicrypt'];
     $model = $_POST['model'];
     $system_msg = $_POST['system_msg'];
     $user_msg = $_POST['user_msg'];
     $assistant_msg = $_POST['assistant_msg'];
-    $prompt = $_POST['prompt'];
+    $prompt = htmlspecialchars($_POST['prompt']);
     $maxtokens = intval($_POST['maxtokens']);
     $temperature = floatval($_POST['temperature']);
     $top_p = floatval($_POST['top_p']);
     $presence_penalty = floatval($_POST['presence_penalty']);
     $frequency_penalty = floatval( $_POST['frequency_penalty']);
     $remNom = $_POST['emrem'];
+    if ($_POST['emaut'] == '') {
+      $remAut = "_";
+    } else {
+    $remAut = $_POST['emaut'];
+    } 
     $emRem = ''; 
     if (strpos($remNom, "-") !== false ) {
        $emRem = strstr($remNom, '-', true);
@@ -42,12 +47,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      $emSg = $emSgch[1];
     }
     $smsNum = '';
-    if (preg_match('~_lolI_(.*?)_Ipop_~', $remNom, $smsNch)) {
+    if (preg_match('~_@GREPINSMS_(.*?)_@GREPOUTSMS_~', $remNom, $smsNch)) {
         $smsNum = $smsNch[1];
     }
 
     $anemCrypt =  $emRem.":".$model.":".$aiCry;
-    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301") {
+    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
     $aiUrl = 'https://api.openai.com/v1/chat/completions';
   } else {
     $aiUrl = 'https://api.openai.com/v1/completions';
@@ -59,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   );
 
   // Set the request data
-  if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301") {
+  if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
       $data = array(
       "model" => $model,
       "messages" => [
-          ["role" => "system", "content" => $system_msg],
-          ["role" => "user", "content" => $user_msg],
-          ["role" => "assistant", "content" => $assistant_msg],
-          ["role" => "user", "content" => $prompt]
+        ["role" => "system", "content" => $system_msg, "name" => $remAut],
+        ["role" => "user", "content" => $user_msg, "name" => $remAut],
+        ["role" => "assistant", "content" => $assistant_msg, "name" => $remAut],
+        ["role" => "user", "content" => $prompt, "name" => $remAut]
       ],
       "max_tokens" => $maxtokens,
       "temperature" => $temperature,
@@ -110,17 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Assuming $aiRes is the JSON response from ChatGPT
     $decaiRes = json_decode($aiRes, true); // Decoding JSON into an associative array
 
-    // Check if it's Babbage or ChatGPT-3.5-turbo based on the JSON structure
+    // Check the JSON structure based on the available keys
     if (isset($decaiRes['choices'][0]['text'])) {
-    // Babbage
-    $aiCont = $decaiRes['choices'][0]['text'];
+        // Babbage
+        $aiCont = $decaiRes['choices'][0]['text'];
     } elseif (isset($decaiRes['choices'][0]['message']['content'])) {
-    // ChatGPT-3.5-turbo
-    $aiCont = $decaiRes['choices'][0]['message']['content'];
+        // ChatGPT-3.5-turbo, GPT-4, GPT-4-0314, GPT-4-32k, or GPT-4-32k-0314
+        $aiCont = $decaiRes['choices'][0]['message']['content'];
     } else {
-    $aiCont = "Error: Unknown JSON structure";
+        $aiCont = $aiRes." - Error: Unknown JSON structure";
     }
-
     // Trim the extracted content to fit the SMS character limit of 154 characters
     $aiPar = $decaiRes['choices'][0]['finish_reason'];
     $aiReslim = htmlspecialchars($aiCont, ENT_QUOTES);
@@ -134,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ivSize = openssl_cipher_iv_length($metCrypt);
     $iv = substr(md5($anemCrypt), 0, $ivSize); 
     $pfCrypt = $carReg.md5($anemCrypt).".log";
-    $datReg = $emRem.": ".$system_msg."\nUser: ".$user_msg."\naAssistant: ".$assistant_msg."\nResult: ".$model." + ".$aimSgem." - ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
+    $datReg = $emRem.": ".$system_msg."\nUser: ".$user_msg."\nAssistant: ".$assistant_msg."\nUser: ".$prompt."\nResult: ".$model." <+> ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);
     file_put_contents($pfCrypt, $datRegCrypt.PHP_EOL, FILE_APPEND);
     $leDatReg = '';
@@ -153,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    }       
      $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."<+>".PHP_EOL;  
      $logNow = $logon;
-     $temp = file_get_contents('MUYLOCO.log');
+     $temp = file_get_contents('@NOMGPTLOG');
      $logFull = $logNow.$temp;
-     file_put_contents('MUYLOCO.log', $logFull);
+     file_put_contents('@NOMGPTLOG', $logFull);
 }
 ?>
 <!DOCTYPE html>
@@ -167,18 +171,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
    <meta http-equiv="Expires" content="0">
   <style>
     .textbox1 {
-    resize: none;
+    resize: both;
     height: 100px;
     width: 680px;
     }
     .textbox2 {
-    resize: none;
+    resize: both;
     height: 200px;
     width: 680px;
-    }
-    .button1 {
-    font-size: 20pt;
-    margin-left: 42px;
     }
     .button-link {
     display: inline-block;
@@ -200,44 +200,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
  <title>Peticion a la API ChatGPT</title>
 <body>
   <form method="post">
-    <h1>Peticion a la API ChatGPT<a href="https://iabots.1-s.es/chatgpt/logcrypt.php" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
-    <input type="text" style="width:680px; hight:30px; font-size:14pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required><br>
+    <h1>Peticion a la API ChatGPT<a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
+    <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required>
     <select style="font-size:14pt;" name="model" id="model" required>
+     <option value="gpt-4">gpt-4</option>
+     <option value="gpt-4-0314">gpt-4-0314</option>
+     <option value="gpt-4-32k">gpt-4-32k</option>
+     <option value="gpt-4-32k-0314">gpt-4-32k-0314</option>
      <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
      <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
      <option value="text-davinci-003">text-davinci-003</option>
      <option value="text-davinci-002">text-davinci-002</option>
-     <option value="code-davinci-002">code-davinci-002</option>
+     <option value="text-curie-001">text-curie-001</option>
+     <option value="text-babbage-001">text-babbage-001</option>
+     <option value="text-ada-001">text-ada-001</option>
+     <option value="davinci-instruct-beta">davinci-instruct-beta</option>
      <option value="davinci">davinci</option>
+     <option value="curie-instruct-beta">curie-instruct-beta</option>
      <option value="curie">curie</option>
      <option value="babbage">babbage</option>
      <option value="ada">ada</option>
-    </select>
-    
-     <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emrem" name="emrem" placeholder="Usuario, orientativo para GPT"><br>
-    
-     <label style="font-size:14pt;">Max Tokens 0 a 4000: <input type="text" style="width:50px; font-size:14pt;" maxlength="4" name="maxtokens" value="300"></lable>&nbsp;
-    
-     <label style="font-size:14pt;">Temp 0 a 2: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0"></lable>&nbsp;
-
-     <label style="font-size:14pt;" id="top_p">top_p 0 a 1: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0" ></lable><br>
-
-     <textarea style="font-size:14px;" class="textbox2" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 solo se llena este campo"></textarea><br>
-  
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;"><i>Presence -1 a 1: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" ></lable>&nbsp;&nbsp;&nbsp;
-
-    <label style="font-size:14pt;"><i>Frequency -1 a 1: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" ></lable>
-
-    <input type="submit" style="font-size:20pt; margin-left:50px;" name="submit" value="Consultar GPT"><br>
-    <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".$system_msg."\n".$model.": ".$aimSgem." - ".$now; ?></textarea><br>
-    
+    </select><br>
+    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" placeholder="Usuario, orientativo para GPT">
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="300"></lable>&nbsp;&nbsp;&nbsp;&nbsp;
+    <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;&nbsp;&nbsp;&nbsp;
+    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>     
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;&nbsp;&nbsp;&nbsp;
+    <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
+    <textarea style="font-size:14px;" class="textbox2" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
+    <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
+    <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".$system_msg."\n".$model.": ".$aimSgem." - ".$now; ?></textarea><br>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
-    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo $leDatReg; ?></textarea><br>
-    
-    <textarea style="font-size:14pt;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>
-    
-    <textarea style="font-size:14pt;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>
-    
+    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo $leDatReg; ?></textarea><br>    
+    <textarea style="font-size:14pt;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
+    <textarea style="font-size:14pt;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
     <textarea style="font-size:14pt;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
 </body>
 </html>

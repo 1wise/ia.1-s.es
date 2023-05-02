@@ -3,14 +3,14 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 08-04-2023 00:00
+	// Last edit 01-05-2023 00:00
 	//
 	// Print a standard page header
 	//
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Check if the form has been submitted
     // Get the form data
-    $carReg = "./registros/";
+    $carReg = "@DIRREGISTROS";
     $aiCry  = $_POST['aicrypt'];
     $model = $_POST['model'];
     $emRem = $_POST['emRem'];
@@ -20,8 +20,6 @@
     $ivSize = openssl_cipher_iv_length($metCrypt);
     $iv = substr(md5($anemCrypt), 0, $ivSize); 
     $pfCrypt = $carReg.md5($anemCrypt).".log";
-//    $leCryptDat = file_get_contents($pfCrypt);
-//    $leDatReg = openssl_decrypt($leCryptDat, $metCrypt, $anemCrypt, 0, $iv);
     $leDatReg = '';
     $lines = file($pfCrypt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
@@ -40,7 +38,7 @@
    <title>Consulta Logs API ChatGPT</title>
     <style>
      .textbox2 {
-      resize: none;
+      resize: both;
       height: 300px;
       width: 680px;
      }
@@ -51,21 +49,29 @@
        <h1>Consulta Logs API ChatGPT</h1>
        <label id="nulog">Tu Conversacion con<?php echo ": ".$model." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable><br>
        <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo $leDatReg; ?></textarea><br>
-
-       <input type="text" style="width:500px; font-size:14pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required><br>
-       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario, orientativo para GPT">
-       <input type="submit" style="width:250px; font-size:20pt;"  name="submit" value="Consultar"><br>
+       <input type="text" style="width:486px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required>
        <select style="font-size:14pt;" name="model" id="model" required>
+         <option value="gpt-4">gpt-4</option>
+         <option value="gpt-4-0314">gpt-4-0314</option>
+         <option value="gpt-4-32k">gpt-4-32k</option>
+         <option value="gpt-4-32k-0314">gpt-4-32k-0314</option>
          <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
          <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
          <option value="text-davinci-003">text-davinci-003</option>
          <option value="text-davinci-002">text-davinci-002</option>
-         <option value="code-davinci-002">code-davinci-002</option>
+         <option value="text-curie-001">text-curie-001</option>
+         <option value="text-babbage-001">text-babbage-001</option>
+         <option value="text-ada-001">text-ada-001</option>
+         <option value="davinci-instruct-beta">davinci-instruct-beta</option>
          <option value="davinci">davinci</option>
+         <option value="curie-instruct-beta">curie-instruct-beta</option>
          <option value="curie">curie</option>
          <option value="babbage">babbage</option>
         <option value="ada">ada</option>
-      </select>
+      </select><br>
+       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario, orientativo para GPT"><br>
+       <input type="submit" style="width:250px; font-size:20pt;"  name="submit" value="Consultar"><br>
+
    </form>
 </body>
 </html>

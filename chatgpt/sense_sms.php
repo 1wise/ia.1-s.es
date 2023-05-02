@@ -3,7 +3,7 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 08-04-2023 00:00
+	// Last edit 01-05-2023 00:00
         // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
 	//
 function sense_sms($aimSgem, $model, $smsNum, $somApi) {
@@ -84,7 +84,7 @@ function sense_sms($aimSgem, $model, $smsNum, $somApi) {
           $status_som = curl_getinfo($smsCurl, CURLINFO_HTTP_CODE);
           curl_close($smsCurl);
           $smsLog  = ">".$emIp."<< - >>".$smsNum."<< - >>".$remMsg."<< - >>".$somRes." - ".date("d-m-Y H:i:s :)").PHP_EOL;
-          file_put_contents('LOCOSMS.log', $smsLog, FILE_APPEND | LOCK_EX); 
+          file_put_contents('@NOMGPTSMSLOG', $smsLog, FILE_APPEND | LOCK_EX); 
 
           if ($status_som === 200) {
            echo " - SMS Enviado con Exito !!".$somRes.PHP_EOL;

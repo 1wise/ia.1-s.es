@@ -9,7 +9,7 @@ https://discord.gg/CfjVFHxu
 https://discord.com/channels/974519864045756446/974544420768710666
 
 ChatGPT
-https://ia.1-s.es/chatgpt
+https://1-s.es/iabots/chatgpt
 https://github.com/1wise/ia.1-s.es/tree/main/chatgpt
 Prompts:
 https://platform.openai.com/docs/guides/chat/introduction

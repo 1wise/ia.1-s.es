@@ -5,12 +5,13 @@ Stability.ai
 https://1-s.es/iabots/dreamstudio
 https://beta.dreamstudio.ai
 
+Prompts:
+https://discord.gg/XZx7P8C3
+https://discord.gg/midjourney
+
 Dall-e2
 https://1-s.es/iabots/dall-e
 https://github.com/1wise/ia.1-s.es/tree/main/dall-e
-Prompts:
-https://discord.gg/CfjVFHxu
-https://discord.com/channels/974519864045756446/974544420768710666
 
 ChatGPT
 https://1-s.es/iabots/chatgpt

@@ -1,7 +1,11 @@
 Here by will be published, Native apps of https://ia.1-s.es
 Background: Debian Bookworm
 
-Dall-e 2
+Stability.ai
+https://1-s.es/dreamstudio
+https://beta.dreamstudio.ai
+
+Dall-e2
 https://ia.1-s.es/dall-e
 https://github.com/1wise/ia.1-s.es/tree/main/dall-e
 Prompts:

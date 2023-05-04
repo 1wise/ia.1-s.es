@@ -9,6 +9,7 @@ Prompts:
 https://discord.gg/XZx7P8C3
 https://discord.gg/midjourney
 https://discord.gg/prompthero-1026222136790110259
+https://prompthero.com/
 
 Dall-e2
 https://1-s.es/iabots/dall-e

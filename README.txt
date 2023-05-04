@@ -1,3 +1,4 @@
+credits: https://www.alawise.es/1-s/
 Here by will be published, Native apps of https://ia.1-s.es
 Background: Debian Bookworm
 

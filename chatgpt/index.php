@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $system_msg = $_POST['system_msg'];
     $user_msg = $_POST['user_msg'];
     $assistant_msg = $_POST['assistant_msg'];
-    $prompt = htmlspecialchars($_POST['prompt']);
+    $prompt = $_POST['prompt'];
     $maxtokens = intval($_POST['maxtokens']);
     $temperature = floatval($_POST['temperature']);
     $top_p = floatval($_POST['top_p']);
@@ -232,7 +232,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
     <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".$system_msg."\n".$model.": ".$aimSgem." - ".$now; ?></textarea><br>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
-    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo $leDatReg; ?></textarea><br>    
+    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>    
     <textarea style="font-size:14pt;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
     <textarea style="font-size:14pt;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
     <textarea style="font-size:14pt;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>

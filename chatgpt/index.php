@@ -147,8 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
     }
     $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via https://ia.1-s.es ";
-    $miMsg .= "<->".$emSg."<-><br><p> ".$emRem." pregunta a ".$model.": <br>".nl2br(htmlspecialchars($system_msg))."<br>User: <br>".nl2br(htmlspecialchars($user_msg))."<br>User: <br>".nl2br(htmlspecialchars($assistant_msg))."<br>Assistant: <br>".nl2br(htmlspecialchars($prompt))."<br>  ".$model.": ".nl2br(htmlspecialchars($aimSgem))." - ".$aiPar."<br>  - ".$emIp." - ".$now."<br> !! Geetings !! ;)</p>";
-   if ($emUsr !== '') {
+    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nUser: \n".$assistant_msg."\nAssistant: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";    if ($emUsr !== '') {
        sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') { 

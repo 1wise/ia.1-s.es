@@ -48,7 +48,7 @@
     <form method="post">
        <h1>Consulta Logs API ChatGPT</h1>
        <label id="nulog">Tu Conversacion con<?php echo ": ".$model." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable><br>
-       <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo $leDatReg; ?></textarea><br>
+       <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
        <input type="text" style="width:486px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required>
        <select style="font-size:14pt;" name="model" id="model" required>
          <option value="gpt-4">gpt-4</option>

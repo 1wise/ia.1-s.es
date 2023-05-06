@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     // Trim the extracted content to fit the SMS character limit of 154 characters
     $aiPar = $decaiRes['choices'][0]['finish_reason'];
-    $aiReslim = htmlspecialchars($aiCont, ENT_QUOTES);
+    $aiReslim = $aiCont;
     $aimSgem = str_replace(
     ["?>", "<?", '\"', "\\r", "\\n", "\n\n", "\n\n"],
     ["?.>", "<.?", '"', "\n", "\n", "\n", "\n"],
@@ -230,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
     <textarea style="font-size:14px;" class="textbox2" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
     <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
-    <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".$system_msg."\n".$model.": ".$aimSgem." - ".$now; ?></textarea><br>   
+    <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\n".$model.": ".htmlspecialchars($aimSgem)." - ".$now; ?></textarea><br>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>    
     <textarea style="font-size:14pt;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    

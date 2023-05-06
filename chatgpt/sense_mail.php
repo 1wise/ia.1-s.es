@@ -38,15 +38,15 @@ function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) 
             $mail->addAddress(trim($recipient));
         }
         // Email content
-        $mail->isHTML(true);
+        $mail->isHTML(false);
         $mail->Subject = $emAsu;
-        $emMsg .= "<html><body>";
-        $emMsg .= "<p>Este correo ha sido enviado desde el formulario </p>";
-        $emMsg .= "<p> @SITURL powered by @EMPRESA.</p>";
-        $emMsg .= "<p>Consulta a ".$model." via @URLAPP</p>";
-        $emMsg .= "<p>Consulta tu log en @URLLOGCRYPT@NOMLOGCRYPT</p>";
+        $emMsg .= "\n";
+        $emMsg .= "Este correo ha sido enviado desde el formulario \n";
+        $emMsg .= "@SITURL powered by @EMPRESA.\n";
+        $emMsg .= "Consulta a ".$model." via @URLAPP \n";
+        $emMsg .= "Consulta tu log en @URLLOGCRYPT@NOMLOGCRYPT \n";
         $emMsg .= $miMsg;
-        $emMsg .= "</body></html>";
+        $emMsg .= "\n";
         $mail->Body = $emMsg;
 
         // Send email

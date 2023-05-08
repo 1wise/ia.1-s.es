@@ -147,7 +147,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
     }
     $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via https://ia.1-s.es ";
-    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nUser: \n".$assistant_msg."\nAssistant: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";    if ($emUsr !== '') {
+    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nUser: \n".$assistant_msg."\nAssistant: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+   if ($emUsr !== '') {
        sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') { 
@@ -231,9 +232,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\n".$model.": ".htmlspecialchars($aimSgem)." - ".$now; ?></textarea><br>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>    
-    <textarea style="font-size:14pt;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
-    <textarea style="font-size:14pt;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
-    <textarea style="font-size:14pt;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
+    <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
+    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
+    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
 </body>
 </html>
 

@@ -6,7 +6,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 01-05-2023 00:00
+	// Last edit 11-05-2023 00:00
 	//
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -31,6 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $remAut = "_";
     } else {
     $remAut = $_POST['emaut'];
+    } 
+    if ($_POST['emautu'] == '') {
+      $remAutU = "_";
+    } else {
+    $remAutU = $_POST['emautu'];
+    } 
+    if ($_POST['emauta'] == '') {
+      $remAutA = "_";
+    } else {
+    $remAutA = $_POST['emauta'];
+    } 
+    if ($_POST['emautp'] == '') {
+      $remAutP = "_";
+    } else {
+    $remAutP = $_POST['emautp'];
     } 
     $emRem = ''; 
     if (strpos($remNom, "-") !== false ) {
@@ -69,9 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       "model" => $model,
       "messages" => [
         ["role" => "system", "content" => $system_msg, "name" => $remAut],
-        ["role" => "user", "content" => $user_msg, "name" => $remAut],
-        ["role" => "assistant", "content" => $assistant_msg, "name" => $remAut],
-        ["role" => "user", "content" => $prompt, "name" => $remAut]
+        ["role" => "user", "content" => $user_msg, "name" => $remAutU],
+        ["role" => "assistant", "content" => $assistant_msg, "name" => $remAutA],
+        ["role" => "user", "content" => $prompt, "name" => $remAutP]
       ],
       "max_tokens" => $maxtokens,
       "temperature" => $temperature,
@@ -138,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ivSize = openssl_cipher_iv_length($metCrypt);
     $iv = substr(md5($anemCrypt), 0, $ivSize); 
     $pfCrypt = $carReg.md5($anemCrypt).".log";
-    $datReg = $emRem.": ".$system_msg."\nUser: ".$user_msg."\nAssistant: ".$assistant_msg."\nUser: ".$prompt."\nResult: ".$model." <+> ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
+    $datReg = $emRem.": ".$system_msg."\nUser: ".$user_msg."\nAssistant: ".$assistant_msg."\nUser: ".$prompt."\n".$model.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);
     file_put_contents($pfCrypt, $datRegCrypt.PHP_EOL, FILE_APPEND);
     $leDatReg = '';
@@ -147,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
     }
     $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via https://ia.1-s.es ";
-    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nUser: \n".$assistant_msg."\nAssistant: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nAssitant: \n".$assistant_msg."\nUser: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
    if ($emUsr !== '') {
        sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
@@ -231,9 +246,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
     <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\n".$model.": ".htmlspecialchars($aimSgem)." - ".$now; ?></textarea><br>   
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
-    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>    
+    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>  
     <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
 </body>
 </html>

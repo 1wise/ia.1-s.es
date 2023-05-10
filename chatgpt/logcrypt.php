@@ -3,18 +3,16 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 01-05-2023 00:00
+	// Last edit 11-05-2023 00:00
 	//
 	// Print a standard page header
 	//
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Check if the form has been submitted
-    // Get the form data
     $carReg = "@DIRREGISTROS";
-    $aiCry  = $_POST['aicrypt'];
+    $aiCry = $_POST['aicrypt'];
     $model = $_POST['model'];
     $emRem = $_POST['emRem'];
-    $anemCrypt =  $_POST['emRem'].":".$_POST['model'].":".$_POST['aicrypt'];    
+    $anemCrypt =  $_POST['emRem'].":".$_POST['model'].":".$aiCry;    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $metCrypt = "aes-256-cbc";
     $ivSize = openssl_cipher_iv_length($metCrypt);
@@ -49,7 +47,7 @@
        <h1>Consulta Logs API ChatGPT</h1>
        <label id="nulog">Tu Conversacion con<?php echo ": ".$model." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable><br>
        <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
-       <input type="text" style="width:486px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required>
+       <input type="text" style="width:486px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI">
        <select style="font-size:14pt;" name="model" id="model" required>
          <option value="gpt-4">gpt-4</option>
          <option value="gpt-4-0314">gpt-4-0314</option>

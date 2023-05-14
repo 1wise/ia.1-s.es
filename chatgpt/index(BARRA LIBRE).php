@@ -9,7 +9,14 @@ require_once '@DIRYNOMSENSESMS';
 	// Last edit 11-05-2023 00:00
 	//
 // Check if the form has been submitted
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $system_msg = '';
+    $user_msg = '';
+    $assistant_msg = '';
+    $prompt = '';
+    $model = ';)';
+    $leDatReg = '';
+    $aimSgem = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the form data
     $somUsu = '@SMSUSER';
     $somPas = '@SMSPASSWORD';
@@ -165,10 +172,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach ($lines as $line) {
         $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
     }
-    $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via https://ia.1-s.es ";
-    $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nAssitant: \n".$assistant_msg."\nUser: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
    if ($emUsr !== '') {
-       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
+      $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
+      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nAssitant: \n".$assistant_msg."\nUser: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+      sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') { 
       sense_sms($aimSgem, $model, $smsNum, $somApi);
@@ -190,12 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <style>
     .textbox1 {
     resize: both;
-    height: 100px;
-    width: 680px;
-    }
-    .textbox2 {
-    resize: both;
-    height: 200px;
+    height: 120px;
     width: 680px;
     }
     .button-link {
@@ -246,17 +248,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>     
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;&nbsp;&nbsp;&nbsp;
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
-    <textarea style="font-size:14px;" class="textbox2" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
+    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
     <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
-    <textarea name="response" style="font-size:14px;" class="textbox2" placeholder="Assistant:" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\n".$model.": ".htmlspecialchars($aimSgem)." - ".$now; ?></textarea><br>   
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
-    <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\nUser: ".htmlspecialchars($user_msg)."\nAssitant: ".htmlspecialchars($assistant_msg)."\nUser: ".htmlspecialchars($prompt)."\n".$model.": ".htmlspecialchars($aimSgem); ?></textarea><br>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>  
     <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
+    <textarea name="rescrypt" style="font-size:14px;" class="textbox1" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
 </body>
 </html>
 

@@ -7,6 +7,9 @@
 	//
 	// Print a standard page header
 	//
+  $model = ';)';
+  $leDatReg = '';
+  $pfCrypt = '';
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $carReg = "@DIRREGISTROS";
     $aiCry = $_POST['aicrypt'];

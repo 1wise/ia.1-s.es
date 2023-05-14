@@ -1,4 +1,6 @@
 <?php
+set_time_limit(120);
+date_default_timezone_set('Europe/Madrid');
 global  $emRem, $emUsr, $model, $system_msg, $emIp, $aimPar, $aimSgem, $smsNum, $somApi;
 require_once '@DIRYNOMSENSEMAIL';
 require_once '@DIRYNOMSENSESMS';
@@ -6,9 +8,9 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 11-05-2023 00:00
+	// Last edit 14-05-2023 00:00
 	//
-// Check if the form has been submitted
+    $emRem = '';
     $system_msg = '';
     $user_msg = '';
     $assistant_msg = '';
@@ -16,6 +18,13 @@ require_once '@DIRYNOMSENSESMS';
     $model = ';)';
     $leDatReg = '';
     $aimSgem = '';
+    $aiPar = '';
+    $now = date(' d-m-y H:i:s ');
+    $emAut = '';
+    $emAutU = '';
+    $emAutA = '';
+    $emAutP = '';
+  // Check if the form has been submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the form data
     $somUsu = '@SMSUSER';
@@ -26,7 +35,7 @@ require_once '@DIRYNOMSENSESMS';
       $aiCry = "@OPENAIAPIKEY";
     } else {
     $aiCry = $_POST['aicrypt'];
-    } 
+    }
     $model = $_POST['model'];
     $system_msg = $_POST['system_msg'];
     $user_msg = $_POST['user_msg'];
@@ -42,29 +51,29 @@ require_once '@DIRYNOMSENSESMS';
       $remAut = "_";
     } else {
     $remAut = $_POST['emaut'];
-    } 
+    }
     if ($_POST['emautu'] == '') {
       $remAutU = "_";
     } else {
     $remAutU = $_POST['emautu'];
-    } 
+    }
     if ($_POST['emauta'] == '') {
       $remAutA = "_";
     } else {
     $remAutA = $_POST['emauta'];
-    } 
+    }
     if ($_POST['emautp'] == '') {
       $remAutP = "_";
     } else {
     $remAutP = $_POST['emautp'];
-    } 
-    $emRem = ''; 
+    }
+    $emRem = '';
     if (strpos($remNom, "-") !== false ) {
        $emRem = strstr($remNom, '-', true);
     } else {
        $emRem = $remNom;
     }
-    $emUsr = ''; 
+    $emUsr = '';
     if (preg_match('~_m_(.*?)_m_~', $remNom, $emUsrch)) {
       $emUsr = $emUsrch[1];
     }
@@ -83,31 +92,41 @@ require_once '@DIRYNOMSENSESMS';
   } else {
     $aiUrl = 'https://api.openai.com/v1/completions';
   }
-  
+
   $headers = array(
   'Content-Type: application/json',
   'Authorization: Bearer ' . $aiCry,
   );
 
   // Set the request data
-  if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
-      $data = array(
-      "model" => $model,
-      "messages" => [
-        ["role" => "system", "content" => $system_msg, "name" => $remAut],
-        ["role" => "user", "content" => $user_msg, "name" => $remAutU],
-        ["role" => "assistant", "content" => $assistant_msg, "name" => $remAutA],
-        ["role" => "user", "content" => $prompt, "name" => $remAutP]
-      ],
-      "max_tokens" => $maxtokens,
-      "temperature" => $temperature,
-      "top_p" => $top_p,
-      "n" => 1,
-      'stop' => null,
-      "user" => $emRem,
-      "presence_penalty" => $presence_penalty,
-      "frequency_penalty" => $frequency_penalty,
-       );
+if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
+    $messages = [];
+    if (!empty($system_msg)) {
+        $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg, "name" => $remAut];
+    }
+    if (!empty($user_msg)) {
+        $messages[] = ["role" => "user", "content" => $user_msg, "name" => $remAutU];
+    }
+    if (!empty($system_msg) && !empty($aimSgem) && !empty($user_msg)) {
+        $messages[] = ["role" => "assistant", "content" => $aimSgem, "name" => $remAutA];
+    } elseif (!empty($assistant_msg)) {
+        $messages[] = ["role" => "assistant", "content" => $assistant_msg, "name" => $remAutA];
+    }
+    if (!empty($prompt)) {
+        $messages[] = ["role" => "user", "content" => $prompt, "name" => $remAutP];
+    }
+    $data = array(
+        "model" => $model,
+        "messages" => $messages,
+        "max_tokens" => $maxtokens,
+        "temperature" => $temperature,
+        "top_p" => $top_p,
+        "n" => 1,
+        'stop' => null,
+        "user" => $emRem,
+        "presence_penalty" => $presence_penalty,
+        "frequency_penalty" => $frequency_penalty,
+    );
   } else {
       $data = array(
       "user" => $emRem,
@@ -132,12 +151,12 @@ require_once '@DIRYNOMSENSESMS';
     CURLOPT_POSTFIELDS => json_encode($data),
     CURLOPT_HTTPHEADER => $headers,
     ));
-    
-    // La respuesta 
+
+    // La respuesta
     $now = date(' d-m-y H:i:s ');
     $emIp = $_SERVER['REMOTE_ADDR'];
     $aiRes = curl_exec($intArr);
-        
+
     // Assuming $aiRes is the JSON response from ChatGPT
     $decaiRes = json_decode($aiRes, true); // Decoding JSON into an associative array
 
@@ -159,12 +178,21 @@ require_once '@DIRYNOMSENSESMS';
     ["?.>", "<.?", '"', "\n", "\n", "\n", "\n"],
     $aiReslim
     );
-
     $metCrypt = "aes-256-cbc";
     $ivSize = openssl_cipher_iv_length($metCrypt);
-    $iv = substr(md5($anemCrypt), 0, $ivSize); 
+    $iv = substr(md5($anemCrypt), 0, $ivSize);
     $pfCrypt = $carReg.md5($anemCrypt).".log";
-    $datReg = $emRem.": ".$system_msg."\nUser: ".$user_msg."\nAssistant: ".$assistant_msg."\nUser: ".$prompt."\n".$model.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
+    $datReg = $emRem.": ".$system_msg."\n";
+    if (!empty($user_msg)) {
+        $datReg .= "User: ".$user_msg."\n";
+    }
+    if (!empty($assistant_msg)) {
+        $datReg .= "Assistant: ".$assistant_msg."\n";
+    }
+    if (!empty($prompt)) {
+        $datReg .= "User: ".$prompt."\n";
+    }
+    $datReg .= $model.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);
     file_put_contents($pfCrypt, $datRegCrypt.PHP_EOL, FILE_APPEND);
     $leDatReg = '';
@@ -172,28 +200,35 @@ require_once '@DIRYNOMSENSESMS';
     foreach ($lines as $line) {
         $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
     }
-   if ($emUsr !== '') {
+    if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\nUser: \n".$user_msg."\nAssitant: \n".$assistant_msg."\nUser: \n".$prompt."\n  ".$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg;
+      if (!empty($user_msg)) {
+          $miMsg .= "User: ".$user_msg."\n";
+      }
+      if (!empty($assistant_msg)) {
+          $miMsg .= "Assistant: ".$assistant_msg."\n";
+      }
+      if (!empty($prompt)) {
+          $miMsg .= "User: ".$prompt."\n";
+      }
+      $miMsg .= $model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
-   if ($smsNum !== '' && $somApi !=='') { 
+   if ($smsNum !== '' && $somApi !=='') {
       sense_sms($aimSgem, $model, $smsNum, $somApi);
-   }       
-     $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."<+>".PHP_EOL;  
-     $logNow = $logon;
-     $temp = file_get_contents('@NOMGPTLOG');
-     $logFull = $logNow.$temp;
-     file_put_contents('@NOMGPTLOG', $logFull);
+   }
+   $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."<+>".PHP_EOL;
+   $logNow = $logon;
+   $temp = file_get_contents('@NOMGPTLOG');
+   $logFull = $logNow.$temp;
+   file_put_contents('@NOMGPTLOG', $logFull);
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
  <head>
    <meta name="Peticion a GPT" content="width=device-width; height=device-height; charset=utf-8;">
-   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-   <meta http-equiv="Pragma" content="no-cache">
-   <meta http-equiv="Expires" content="0">
   <style>
     .textbox1 {
     resize: both;
@@ -211,7 +246,7 @@ require_once '@DIRYNOMSENSESMS';
     text-decoration: none;
     cursor: pointer;
     border-radius: 4px;
-    margin-left: 40px; 
+    margin-left: 40px;
     }
     .button-link:hover {
     background-color: #45a049;
@@ -219,7 +254,7 @@ require_once '@DIRYNOMSENSESMS';
 </head>
  <title>Peticion a la API ChatGPT</title>
 <body>
-  <form method="post">
+  <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data" onsubmit="changeButtonColor()">
     <h1>Peticion a la API ChatGPT<a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
     <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
@@ -241,24 +276,67 @@ require_once '@DIRYNOMSENSESMS';
      <option value="babbage">babbage</option>
      <option value="ada">ada</option>
     </select><br>
-    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" placeholder="Usuario, orientativo para GPT">
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT">
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="300"></lable>&nbsp;&nbsp;&nbsp;&nbsp;
     <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;&nbsp;&nbsp;&nbsp;
-    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>     
+    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;&nbsp;&nbsp;&nbsp;
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
-    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
-    <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
-    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\nUser: ".htmlspecialchars($user_msg)."\nAssistant: ".htmlspecialchars($assistant_msg)."\nUser: ".htmlspecialchars($prompt)."\n".$model.": ".htmlspecialchars($aimSgem); ?></textarea><br>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>  
-    <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"></textarea><br>   
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"></textarea><br>
+    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"><?php echo $system_msg; ?></textarea><br>
+    <input style="text-align:center; width:665px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO"><br>
+    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php
+        echo $emRem.": ".htmlspecialchars($system_msg)."\n";
+        if (!empty($user_msg)) {
+            echo "User: ".htmlspecialchars($user_msg)."\n";
+        }
+        if (!empty($assistant_msg)) {
+            echo "Assistant: ".htmlspecialchars($assistant_msg)."\n";
+        }
+        if (!empty($prompt)) {
+            echo "User: ".htmlspecialchars($prompt)."\n";
+        }
+        echo $model.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
+    ?></textarea><br>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"><?php echo $user_msg; ?></textarea><br>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta"value="<?php echo $emAutA; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"><?php
+     if (!empty($_POST['assistant_msg']) || empty($_POST['user_msg'])) {
+       echo htmlspecialchars($assistant_msg);
+     } else {
+       echo htmlspecialchars($aimSgem);
+     }
+    ?></textarea><br>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" value="<?php echo $emAutP; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"><?php
+     if (!empty($_POST['prompt'])) {
+        echo htmlspecialchars($prompt);
+     }
+    ?></textarea><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox1" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    <div id="loader" class="loader" style="display: none;"></div>
+  <script>
+    function showLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'block';
+      submitButton.style.backgroundColor = 'red';
+    }
+    function hideLoader() {
+      const loader = document.getElementById('loader');
+      const submitButton = document.getElementById('submit');
+      loader.style.display = 'none';
+      submitButton.style.backgroundColor = ''; // Reset the background color
+    }
+    document.getElementById('request-form').addEventListener('submit', function() {
+      showLoader();
+    });
+
+    document.getElementById('request-form').addEventListener('load', function() {
+      hideLoader();
+   });
+  </script>
 </body>
 </html>
-

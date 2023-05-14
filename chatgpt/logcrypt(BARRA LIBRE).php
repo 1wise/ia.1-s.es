@@ -3,7 +3,7 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 11-05-2023 00:00
+	// Last edit 14-05-2023 00:00
 	//
 	// Print a standard page header
 	//
@@ -11,8 +11,6 @@
   $leDatReg = '';
   $pfCrypt = '';
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Check if the form has been submitted
-    // Get the form data
     $carReg = "@DIRREGISTROS";
     if ($_POST['aicrypt'] == '') {
       $aiCry = "@OPENAIAPIKEY";
@@ -23,15 +21,19 @@
     $emRem = $_POST['emRem'];
     $anemCrypt =  $_POST['emRem'].":".$_POST['model'].":".$aiCry;    
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $metCrypt = "aes-256-cbc";
-    $ivSize = openssl_cipher_iv_length($metCrypt);
-    $iv = substr(md5($anemCrypt), 0, $ivSize); 
-    $pfCrypt = $carReg.md5($anemCrypt).".log";
-    $leDatReg = '';
-    $lines = file($pfCrypt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
-    }
+      $metCrypt = "aes-256-cbc";
+      $ivSize = openssl_cipher_iv_length($metCrypt);
+      $iv = substr(md5($anemCrypt), 0, $ivSize); 
+      $pfCrypt = $carReg.md5($anemCrypt).".log";
+      if (file_exists($pfCrypt)) {
+        $leDatReg = '';
+        $lines = file($pfCrypt, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+          $leDatReg .= openssl_decrypt($line, $metCrypt, $anemCrypt, 0, $iv);
+        }
+      } else {
+        $leDatReg = "La combinacion es incorrecta";
+      }
    }
 }
 ?>

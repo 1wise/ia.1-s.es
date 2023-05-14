@@ -180,13 +180,13 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     $pfCrypt = $carReg.md5($anemCrypt).".log";
     $datReg = $emRem.": ".$system_msg."\n";
     if (!empty($user_msg)) {
-        $datReg .= "User: ".$user_msg."\n";
+        $datReg .= "\nUser: ".$user_msg."\n";
     }
     if (!empty($assistant_msg)) {
-        $datReg .= "Assistant: ".$assistant_msg."\n";
+        $datReg .= "\nAssistant: ".$assistant_msg."\n";
     }
     if (!empty($prompt)) {
-        $datReg .= "User: ".$prompt."\n";
+        $datReg .= "\nUser: ".$prompt."\n";
     }
     $datReg .= $model.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);

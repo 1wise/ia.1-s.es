@@ -18,6 +18,7 @@ function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) 
       // SMTP configuration
       try {
         $mail->isSMTP();
+        $mail->SetLanguage("es");
         $mail->Host = '@PMSERVERDOMAIN';
 //        $mail->SMTPDebug = 2;
 //        $mail->Debugoutput = function($str, $level) {

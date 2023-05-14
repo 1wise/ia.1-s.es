@@ -276,7 +276,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
      <option value="babbage">babbage</option>
      <option value="ada">ada</option>
     </select><br>
-    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT">
+    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT"  required>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="300"></lable>&nbsp;&nbsp;&nbsp;&nbsp;
     <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;&nbsp;&nbsp;&nbsp;

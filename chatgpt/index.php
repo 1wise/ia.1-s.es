@@ -208,13 +208,13 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
       if (!empty($prompt)) {
           $miMsg .= "User: ".$prompt."\n";
       }
-      $miMsg .= $model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+      $miMsg .= $model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') {
       sense_sms($aimSgem, $model, $smsNum, $somApi);
    }
-    $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."<+>".PHP_EOL;  
+    $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."<+>".PHP_EOL;  
     $logNow = $logon;
     $temp = file_get_contents('@NOMGPTLOG');
     $logFull = $logNow.$temp;

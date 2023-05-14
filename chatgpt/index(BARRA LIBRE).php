@@ -204,13 +204,13 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
       $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
       $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg;
       if (!empty($user_msg)) {
-          $miMsg .= "User: ".$user_msg."\n";
+          $miMsg .= "\nUser: ".$user_msg."\n";
       }
       if (!empty($assistant_msg)) {
-          $miMsg .= "Assistant: ".$assistant_msg."\n";
+          $miMsg .= "\nAssistant: ".$assistant_msg."\n";
       }
       if (!empty($prompt)) {
-          $miMsg .= "User: ".$prompt."\n";
+          $miMsg .= "\nUser: ".$prompt."\n";
       }
       $miMsg .= $model.": ".$aimSgem." - ".$aiPar."\n  - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);

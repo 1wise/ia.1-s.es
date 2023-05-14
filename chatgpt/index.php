@@ -246,7 +246,7 @@ require_once '@DIRYNOMSENSESMS';
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
     <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo se llena este campo"></textarea><br>
     <input type="submit" style="width:680px; font-size:20pt;" name="submit" value="Consultar ChatGPT"><br>
-    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\nUser: ".htmlspecialchars($user_msg)."\nAssitant: ".htmlspecialchars($assistant_msg)."\nUser: ".htmlspecialchars($prompt)."\n".$model.": ".htmlspecialchars($aimSgem); ?></textarea><br>
+    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php echo $emRem.": ".htmlspecialchars($system_msg)."\nUser: ".htmlspecialchars($user_msg)."\nAssistant: ".htmlspecialchars($assistant_msg)."\nUser: ".htmlspecialchars($prompt)."\n".$model.": ".htmlspecialchars($aimSgem); ?></textarea><br>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>  
     <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"></textarea><br>    
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>

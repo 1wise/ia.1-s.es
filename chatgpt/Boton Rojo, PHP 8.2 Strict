@@ -78,7 +78,7 @@
          <option value="babbage">babbage</option>
         <option value="ada">ada</option>
       </select><br>
-       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario, orientativo para GPT"><br>
+       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario, orientativo para GPT" required><br>
        <input type="submit" style="width:250px; font-size:20pt;"  name="submit" value="Consultar"><br>
 
    </form>

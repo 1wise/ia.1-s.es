@@ -153,14 +153,14 @@ require_once './sense_sms.php';
     }
     if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$wise.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$wise.": \n".$user_msg;
+      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$wise.": \n".$user_msg."\n";
       if (!empty($assistant_msg)) {
-          $miMsg .= "\n".$wise.": ".$assistant_msg;
+          $miMsg .= $wise.": ".$assistant_msg;
       }
       if (!empty($prompt)) {
-          $miMsg .= "\n".$emRem.": ".$prompt;
+          $miMsg .= $emRem.": ".$prompt;
       }
-      $miMsg .= "\n".$wise.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+      $miMsg .= $wise.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $wise, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') {

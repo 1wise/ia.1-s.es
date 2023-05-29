@@ -198,15 +198,15 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     }
     if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg;
+      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\n";
       if (!empty($user_msg)) {
-          $miMsg .= "\nUser: ".$user_msg."\n";
+          $miMsg .= "User: ".$user_msg."\n";
       }
       if (!empty($assistant_msg)) {
-          $miMsg .= "\nAssistant: ".$assistant_msg."\n";
+          $miMsg .= "Assistant: ".$assistant_msg."\n";
       }
       if (!empty($prompt)) {
-          $miMsg .= "\nUser: ".$prompt."\n";
+          $miMsg .= "User: ".$prompt."\n";
       }
       $miMsg .= $model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);

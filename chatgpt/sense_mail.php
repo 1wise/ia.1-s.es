@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\SMTP;
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 01-05-2023 00:00
+	// Last edit 30-05-2023 00:00
 	//
 function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) {
       global  $emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp;

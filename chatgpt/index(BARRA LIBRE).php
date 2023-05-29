@@ -1,5 +1,5 @@
 <?php
-set_time_limit(120);
+set_time_limit(300);
 date_default_timezone_set('Europe/Madrid');
 global  $emRem, $emUsr, $model, $system_msg, $emIp, $aimPar, $aimSgem, $smsNum, $somApi;
 require_once '@DIRYNOMSENSEMAIL';
@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 14-05-2023 00:00
+	// Last edit 30-05-2023 00:00
 	//
     $emRem = '';
     $system_msg = '';
@@ -229,7 +229,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
 <html lang="es">
  <head>
    <meta name="Peticion a GPT" content="width=device-width; height=device-height; charset=utf-8;">
-  <style>
+   <style>
     .textbox1 {
     resize: both;
     height: 120px;
@@ -250,11 +250,29 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     }
     .button-link:hover {
     background-color: #45a049;
-  </style>
+    }
+    .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+ </style>
 </head>
  <title>Peticion a la API ChatGPT</title>
 <body>
-  <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data" onsubmit="changeButtonColor()">
+  <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
     <h1>Peticion a la API ChatGPT<a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
     <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
@@ -280,30 +298,32 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="300"></lable>&nbsp;
     <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;
-    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>&nbsp;
+    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
     <label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
     <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo rellenar este campo" required><?php echo $system_msg; ?></textarea><br>
-    <input style="text-align:center; width:665px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO"><br>
+    <input style="text-align:center; width:570px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO">&nbsp;&nbsp;
+    <button type="button" style="width:100px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar</button><br>
     <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php
-        echo $emRem.": ".htmlspecialchars($system_msg)."\n";
+        echo $emRem.": ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($system_msg))."\n";
         if (!empty($user_msg)) {
-            echo "User: ".htmlspecialchars($user_msg)."\n";
+            echo "User: ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($user_msg))."\n";
         }
         if (!empty($assistant_msg)) {
-            echo "Assistant: ".htmlspecialchars($assistant_msg)."\n";
+            echo "Assistant: ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($assistant_msg))."\n";
         }
         if (!empty($prompt)) {
-            echo "User: ".htmlspecialchars($prompt)."\n";
+            echo "User: ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($prompt))."\n";
         }
         echo $model.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
     ?></textarea><br>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _">
+    <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button><br>
     <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"><?php echo $user_msg; ?></textarea><br>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta"value="<?php echo $emAutA; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"><?php
      if (!empty($_POST['assistant_msg']) || empty($_POST['user_msg'])) {
-       echo htmlspecialchars($assistant_msg);
+       echo str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($assistant_msg));
      } else {
        echo htmlspecialchars($aimSgem);
      }
@@ -311,32 +331,63 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" value="<?php echo $emAutP; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
     <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"><?php
      if (!empty($_POST['prompt'])) {
-        echo htmlspecialchars($prompt);
+        echo str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($prompt));
      }
     ?></textarea><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style=" font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox1" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    <textarea hidden name="aimSgem" id="aimSgem"><?php echo htmlspecialchars($aimSgem); ?></textarea>
     <div id="loader" class="loader" style="display: none;"></div>
-  <script>
-    function showLoader() {
-      const loader = document.getElementById('loader');
-      const submitButton = document.getElementById('submit');
-      loader.style.display = 'block';
-      submitButton.style.backgroundColor = 'red';
-    }
-    function hideLoader() {
-      const loader = document.getElementById('loader');
-      const submitButton = document.getElementById('submit');
-      loader.style.display = 'none';
-      submitButton.style.backgroundColor = ''; // Reset the background color
-    }
-    document.getElementById('request-form').addEventListener('submit', function() {
-      showLoader();
-    });
-
-    document.getElementById('request-form').addEventListener('load', function() {
-      hideLoader();
+ <script>
+  function showLoader() {
+    const loader = document.getElementById('loader');
+    const submitButton = document.getElementById('submit');
+    loader.style.display = 'block';
+    submitButton.style.backgroundColor = 'red';
+  }
+  function hideLoader() {
+    const loader = document.getElementById('loader');
+    const submitButton = document.getElementById('submit');
+    loader.style.display = 'none';
+    submitButton.style.backgroundColor = '';
+  }
+  function copyToClipboard() {
+    const responseTextarea = document.querySelector('textarea[name="response"]');
+    const tempInput = document.createElement('textarea');
+    document.body.appendChild(tempInput);
+    tempInput.value = responseTextarea.value;
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    alert(responseTextarea.value);
+  }
+  function ToClipboard() {
+    const ledatregTextarea = document.querySelector('textarea[name="rescrypt"]');
+    const ledatInput = document.createElement('textarea');
+    document.body.appendChild(ledatInput);
+    ledatInput.value = ledatregTextarea.value;
+    ledatInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(ledatInput);
+    alert(ledatregTextarea.value);
+  }
+  function asgToClipboard() {
+    const asgTextarea = document.querySelector('textarea[name="aimSgem"]');
+    const asgInput = document.createElement('textarea');
+    document.body.appendChild(asgInput);
+    asgInput.value = asgTextarea.value;
+    asgInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(asgInput);
+    alert(asgTextarea.value);
+  }
+  document.getElementById('request-form').addEventListener('submit', function() {
+    showLoader();
+  });
+  document.getElementById('request-form').addEventListener('load', function() {
+    hideLoader();
    });
-  </script>
+ </script>
+ </form>
 </body>
 </html>

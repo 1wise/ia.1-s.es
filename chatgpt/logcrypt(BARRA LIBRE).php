@@ -3,7 +3,7 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 14-05-2023 00:00
+	// Last edit 30-05-2023 00:00
 	//
 	// Print a standard page header
 	//
@@ -16,14 +16,14 @@
       $aiCry = "@OPENAIAPIKEY";
     } else {
     $aiCry = $_POST['aicrypt'];
-    } 
+    }
     $model = $_POST['model'];
     $emRem = $_POST['emRem'];
-    $anemCrypt =  $_POST['emRem'].":".$_POST['model'].":".$aiCry;    
+    $anemCrypt =  $_POST['emRem'].":".$_POST['model'].":".$aiCry;
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $metCrypt = "aes-256-cbc";
       $ivSize = openssl_cipher_iv_length($metCrypt);
-      $iv = substr(md5($anemCrypt), 0, $ivSize); 
+      $iv = substr(md5($anemCrypt), 0, $ivSize);
       $pfCrypt = $carReg.md5($anemCrypt).".log";
       if (file_exists($pfCrypt)) {
         $leDatReg = '';
@@ -56,7 +56,8 @@
   <body>
     <form method="post">
        <h1>Consulta Logs API ChatGPT</h1>
-       <label id="nulog">Tu Conversacion con<?php echo ": ".$model." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable><br>
+       <label id="nulog">Tu Conversacion con<?php echo ": ".$model." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable>&nbsp;&nbsp;&nbsp;&nbsp;
+       <button type="button" style="width:80px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar</button><br>
        <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
        <input type="text" style="width:486px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI dejar en blanco para usar Clave @EMPRESA">
        <select style="font-size:14pt;" name="model" id="model" required>
@@ -76,11 +77,22 @@
          <option value="curie-instruct-beta">curie-instruct-beta</option>
          <option value="curie">curie</option>
          <option value="babbage">babbage</option>
-        <option value="ada">ada</option>
-      </select><br>
+         <option value="ada">ada</option>
+       </select><br>
        <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario, orientativo para GPT" required><br>
        <input type="submit" style="width:250px; font-size:20pt;"  name="submit" value="Consultar"><br>
-
    </form>
+ <script> 
+  function ToClipboard() {
+    const ledatregTextarea = document.querySelector('textarea[name="rescrypt"]');
+    const ledatInput = document.createElement('textarea');
+    document.body.appendChild(ledatInput);
+    ledatInput.value = ledatregTextarea.value;
+    ledatInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(ledatInput);
+    alert(ledatregTextarea.value);
+  }
+ </script>
 </body>
 </html>

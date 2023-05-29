@@ -26,7 +26,7 @@ def update_parameters(input_folder, replacements):
 
 if __name__ == "__main__":
     input_folder = input("Carpeta de instalacion: ").strip()
-    replacements_file = input("Archivo de insatlacion: ").strip()
+    replacements_file = input("Archivo de instalacion: ").strip()
 
     replacements = load_replacements(replacements_file)
     update_parameters(input_folder, replacements)

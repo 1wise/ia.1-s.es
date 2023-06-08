@@ -202,7 +202,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     }
     if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\n";
+      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\n";
       if (!empty($user_msg)) {
           $miMsg .= "User: ".$user_msg."\n";
       }

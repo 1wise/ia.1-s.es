@@ -53,13 +53,14 @@ function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) 
         // Send email
         $mail->send();
  
-         $mailLog  = ">".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
-        file_put_contents('@NOMGPTMAILLOG', $mailLog, FILE_APPEND); 
+        $mailLog  = ">".$emIp."<< - >>".$emRem."<< - >>".$emUsr."<< - >>".$model." - ".$now.PHP_EOL;
+
+	file_put_contents('@NOMGPTMAILLOG', $mailLog, FILE_APPEND); 
         echo "Email enviado !!".PHP_EOL;
  
       } catch (Exception $e) {
 
-        $mailLog  = "ERROR >>>".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
+        $mailLog  = "ERROR >>>".$emIp."<< - >>".$emRem."<< - >>".$emUsr."<< - >>".$model."<< - >>"." - ".$now.PHP_EOL;
         file_put_contents('@NOMGPTMAILLOG', $mailLog, FILE_APPEND); 
         echo 'Email no se a podido enviar. Error: ' . $mail->ErrorInfo . PHP_EOL;
  

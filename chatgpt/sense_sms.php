@@ -3,7 +3,7 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 01-05-2023 00:00
+	// Last edit 16-06-2023 00:00
         // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
 	//
 function sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp) {

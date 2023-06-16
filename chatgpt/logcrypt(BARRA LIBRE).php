@@ -63,10 +63,15 @@
        <select style="font-size:14pt;" name="model" id="model" required>
          <option value="gpt-4">gpt-4</option>
          <option value="gpt-4-0314">gpt-4-0314</option>
+         <option value="gpt-4-0613">gpt-4-0613</option>
          <option value="gpt-4-32k">gpt-4-32k</option>
          <option value="gpt-4-32k-0314">gpt-4-32k-0314</option>
+         <option value="gpt-4-32k-0613">gpt-4-32k-0613</option>
          <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-         <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
+         <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
+         <option value="gpt-3.5-turbo-0314">gpt-3.5-turbo-0314</option>
+         <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+         <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-16k-turbo-0613</option>
          <option value="text-davinci-003">text-davinci-003</option>
          <option value="text-davinci-002">text-davinci-002</option>
          <option value="text-curie-001">text-curie-001</option>

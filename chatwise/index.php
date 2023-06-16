@@ -164,7 +164,7 @@ require_once './sense_sms.php';
       sense_mail($emRem, $emUsr, $wise, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') {
-      sense_sms($aimSgem, $model, $smsNum, $somApi);
+      sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp);
    }
    $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."<+>".PHP_EOL;
    $logNow = $logon;

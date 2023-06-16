@@ -11,7 +11,7 @@ require_once './sense_sms.php';
 	// https://ia.1-s.es/
 	// https://1wise.es
 	// https://www.alawise.es/1-s
-	// Last edit 20-05-2023 00:00
+	// Last edit 16-06-2023 00:00
 	//
   $emRem = '';
   $user_msg = '';

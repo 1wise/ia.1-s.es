@@ -86,7 +86,7 @@ require_once './sense_sms.php';
     $data = array(
         "model" => $model,
         "messages" => $messages,
-        "max_tokens" => intval(1024),
+        "max_tokens" => intval(4096),
         "temperature" => floatval(0.4),
         "top_p" =>  floatval(0.2),
         "n" => 1,
@@ -214,7 +214,7 @@ require_once './sense_sms.php';
   <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
     <h1><a href="@SITURL@">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
     <select style="font-size:14pt;" name="model" id="model" required>
-     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+     <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
      <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
      <option value="gpt-4">gpt-4</option>
      <option value="gpt-4-0613">gpt-4-0613</option>

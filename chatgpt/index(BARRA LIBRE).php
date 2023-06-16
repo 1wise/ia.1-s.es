@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 30-05-2023 00:00
+	// Last edit 16-06-2023 00:00
 	//
     $emRem = '';
     $system_msg = '';
@@ -216,7 +216,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
       sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') {
-      sense_sms($aimSgem, $model, $smsNum, $somApi);
+      sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp);
    }
    $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."<+>".PHP_EOL;
    $logNow = $logon;

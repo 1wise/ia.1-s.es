@@ -6,8 +6,8 @@
 	// Last edit 01-05-2023 00:00
         // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
 	//
-function sense_sms($aimSgem, $model, $smsNum, $somApi) {
-    global $aimSgem, $model, $smsNum, $somApi;
+function sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp) {
+    global $aimSgem, $model, $smsNum, $somApi; $emIp;
     $imSgem = str_replace(
        ['\'', '’', '‘', '“', '”', '–', '—', '…', '¢', '€', '©', '®', '™', '°', '²', '³', 'µ', '¹', '¼', '½', '¾', '×', '÷',
         '«', '»', 'Á', 'â', 'ã', 'È', 'ê', 'ë', 'ì', 'ï', 'ð', 'Ì', 'í', 'Î', 'ï', 'ò', 'ó', 'ô', 'õ', 'ö', 'ÿ', 'ù',
@@ -83,7 +83,7 @@ function sense_sms($aimSgem, $model, $smsNum, $somApi) {
           }
           $status_som = curl_getinfo($smsCurl, CURLINFO_HTTP_CODE);
           curl_close($smsCurl);
-          $smsLog  = ">".$emIp."<< - >>".$smsNum."<< - >>".$remMsg."<< - >>".$somRes." - ".date("d-m-Y H:i:s :)").PHP_EOL;
+          $smsLog  = ">".$emIp."<< - >>".$smsNum."<< - >>".$model."<< - >>".$aimSgem."<< - >>".$somRes." - ".date("d-m-Y H:i:s :)").PHP_EOL;
           file_put_contents('@NOMGPTSMSLOG', $smsLog, FILE_APPEND | LOCK_EX); 
 
           if ($status_som === 200) {

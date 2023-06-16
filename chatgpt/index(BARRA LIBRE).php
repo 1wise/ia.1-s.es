@@ -87,7 +87,7 @@ require_once '@DIRYNOMSENSESMS';
     }
 
     $anemCrypt =  $emRem.":".$model.":".$aiCry;
-    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
+    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
     $aiUrl = 'https://api.openai.com/v1/chat/completions';
   } else {
     $aiUrl = 'https://api.openai.com/v1/completions';
@@ -99,8 +99,8 @@ require_once '@DIRYNOMSENSESMS';
   );
 
   // Set the request data
-if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gpt-4" || $model == "gpt-4-0314" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0314") {
-    $messages = [];
+if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
+	$messages = [];
     if (!empty($system_msg)) {
         $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg, "name" => $remAut];
     }
@@ -277,11 +277,13 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-0301" || $model == "gp
     <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
      <option value="gpt-4">gpt-4</option>
-     <option value="gpt-4-0314">gpt-4-0314</option>
+     <option value="gpt-4-0613">gpt-4-0613</option>
      <option value="gpt-4-32k">gpt-4-32k</option>
-     <option value="gpt-4-32k-0314">gpt-4-32k-0314</option>
+     <option value="gpt-4-32k-0613">gpt-4-32k-0613</option>
      <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
-     <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
+     <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
+     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
      <option value="text-davinci-003">text-davinci-003</option>
      <option value="text-davinci-002">text-davinci-002</option>
      <option value="text-curie-001">text-curie-001</option>

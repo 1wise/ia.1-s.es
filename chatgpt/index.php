@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 30-05-2023 00:00
+	// Last edit 16-03-2023 00:00
 	//
     $emRem = '';
     $system_msg = '';

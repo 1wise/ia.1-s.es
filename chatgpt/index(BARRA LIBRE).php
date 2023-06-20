@@ -273,7 +273,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
  <title>Peticion a la API ChatGPT</title>
 <body>
   <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
-    <h1><a href="@URLLOGCRYPT">Peticion a la API ChatGPT</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
+    <h1><a href="@URLAPP">Peticion a la API ChatGPT</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
     <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
      <option value="gpt-4">gpt-4</option>

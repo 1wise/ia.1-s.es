@@ -212,7 +212,7 @@ require_once './sense_sms.php';
  <title>Cosulta al Wise</title>
 <body>
   <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
-    <h1><a href="@URLAPP@">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
+    <h1><a href="@URLAPP">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
     <select style="font-size:14pt;" name="model" id="model" required>
      <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
      <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>

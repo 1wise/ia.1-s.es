@@ -11,13 +11,16 @@ require_once './sense_sms.php';
 	// https://ia.1-s.es/
 	// https://1wise.es
 	// https://www.alawise.es/1-s
-	// Last edit 16-06-2023 00:00
+	// Last edit 25-05-2023 00:00
 	//
   $emRem = '';
   $user_msg = '';
   $assistant_msg = '';
   $prompt = '';
   $model = ';)';
+  $aiProTok = '';
+  $aiCompTok = '';
+  $aiToken = '';
   $leDatReg = '';
   $aimSgem = '';
   $aiPar = '';
@@ -126,6 +129,9 @@ require_once './sense_sms.php';
     }
     // Trim the extracted content to fit the SMS character limit of 154 characters
     $aiPar = $decaiRes['choices'][0]['finish_reason'];
+    $aiProTok = $decaiRes['usage']['prompt_tokens'];
+    $aiCompTok = $decaiRes['usage']['completion_tokens'];
+    $aiToken = $decaiRes['usage']['total_tokens'];
     $aiReslim = $aiCont;
     $aimSgem = str_replace(
     ['\"', "\\r", "\\n", "\n\n", "\n\n"],
@@ -155,12 +161,12 @@ require_once './sense_sms.php';
       $emAsu = "Respuesta de ".$wise.", Cortesia de: " . $emRem . " via @EMPRESA ";
       $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$wise.": \n".$user_msg."\n";
       if (!empty($assistant_msg)) {
-          $miMsg .= $wise.": ".$assistant_msg;
+          $miMsg .= "\n".$wise.": ".$assistant_msg;
       }
       if (!empty($prompt)) {
-          $miMsg .= $emRem.": ".$prompt;
+          $miMsg .= "\n".$emRem.": ".$prompt;
       }
-      $miMsg .= $wise.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
+      $miMsg .= "\n".$wise.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."\n !! Geetings !! ;)\n";
       sense_mail($emRem, $emUsr, $wise, $system_msg, $emAsu, $miMsg, $emIp);
    }
    if ($smsNum !== '' && $somApi !=='') {
@@ -171,13 +177,21 @@ require_once './sense_sms.php';
    $temp = file_get_contents('@NOMGPTLOG');
    $logFull = $logNow.$temp;
    file_put_contents('@NOMGPTLOG', $logFull);
+   $uso = "<+> ".$emRem." - ".$now." <P>".$aiProTok."<C>".$aiCompTok."<T>".$aiToken."\n";
+   $tempuso = file_get_contents('@NOMUSOGPTLOG');
+   $usofull = $uso.$tempuso;
+   file_put_contents('@NOMUSOGPTLOG', $usofull);
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
  <head>
    <meta name="Consulta al Wise" content="width=device-width; height=device-height; charset=utf-8;">
-  <style>
+   <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+   <style>
+    * {
+    font-family: 'Open Sans';
+    }
     h1 {
     font-size: 28pt;
     color: green;
@@ -207,7 +221,25 @@ require_once './sense_sms.php';
     }
     .button-link:hover {
     background-color: #45a049;
-  </style>
+    }
+    .loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+ </style>
 </head>
  <title>Cosulta al Wise</title>
 <body>
@@ -215,11 +247,11 @@ require_once './sense_sms.php';
     <h1><a href="@URLAPP">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
     <select style="font-size:14pt;" name="model" id="model" required>
      <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-0613</option>
      <option value="gpt-4">gpt-4</option>
      <option value="gpt-4-0613">gpt-4-0613</option>
     </select>
-    <input type="text" style="width:495px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave de @EMPRESA"><br>
+    <input type="text" style="width:480px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave @EMPRESA"><br>
      <select style="font-size:14pt;" name="wise" id="wise" required>
      <option value="Lao Tzu">Lao Tzu</option>
      <option value="Sun Tzu">Sun Tzu</option>
@@ -252,7 +284,7 @@ require_once './sense_sms.php';
      <option value="formal">Formal</option>
      <option value="casual">Informal</option>
     </select>
-    <input type="text" style="width:265px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario orientativo para el Wise" required><br>
+    <input type="text" style="width:245px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="¿Quien Consulta al Wise?" required><br>
     <input style="text-align:center; width:680px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta al Wise NO darle cuando esta en ROJO"><br>
     <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="Escribe aqui tu consulta" required><?php echo $user_msg; ?></textarea><br>
     <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="<?php echo $wise; ?>"><?php echo htmlspecialchars($aimSgem); ?></textarea><br>
@@ -268,28 +300,62 @@ require_once './sense_sms.php';
         echo $wise.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
     ?></textarea><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color: green; font-size:14pt;">Tu Conversacion con : <?php echo $wise; ?></lable><br>
+    <button type="button" style="width:280px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar Conversacion</button>
+    <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button>
+    <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    <textarea hidden name="aimSgem" id="aimSgem"><?php echo htmlspecialchars($aimSgem); ?></textarea>
     <div id="loader" class="loader" style="display: none;"></div>
-  <script>
-    function showLoader() {
-      const loader = document.getElementById('loader');
-      const submitButton = document.getElementById('submit');
-      loader.style.display = 'block';
-      submitButton.style.backgroundColor = 'red';
-    }
-    function hideLoader() {
-      const loader = document.getElementById('loader');
-      const submitButton = document.getElementById('submit');
-      loader.style.display = 'none';
-      submitButton.style.backgroundColor = ''; // Reset the background color
-    }
-    document.getElementById('request-form').addEventListener('submit', function() {
-      showLoader();
-    });
-
-    document.getElementById('request-form').addEventListener('load', function() {
-      hideLoader();
+ <script>
+  function showLoader() {
+    const loader = document.getElementById('loader');
+    const submitButton = document.getElementById('submit');
+    loader.style.display = 'block';
+    submitButton.style.backgroundColor = 'red';
+  }
+  function hideLoader() {
+    const loader = document.getElementById('loader');
+    const submitButton = document.getElementById('submit');
+    loader.style.display = 'none';
+    submitButton.style.backgroundColor = '';
+  }
+  function copyToClipboard() {
+    const responseTextarea = document.querySelector('textarea[name="response"]');
+    const tempInput = document.createElement('textarea');
+    document.body.appendChild(tempInput);
+    tempInput.value = responseTextarea.value;
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+    alert(responseTextarea.value);
+  }
+  function ToClipboard() {
+    const ledatregTextarea = document.querySelector('textarea[name="rescrypt"]');
+    const ledatInput = document.createElement('textarea');
+    document.body.appendChild(ledatInput);
+    ledatInput.value = ledatregTextarea.value;
+    ledatInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(ledatInput);
+    alert(ledatregTextarea.value);
+  }
+  function asgToClipboard() {
+    const asgTextarea = document.querySelector('textarea[name="aimSgem"]');
+    const asgInput = document.createElement('textarea');
+    document.body.appendChild(asgInput);
+    asgInput.value = asgTextarea.value;
+    asgInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(asgInput);
+    alert(asgTextarea.value);
+  }
+  document.getElementById('request-form').addEventListener('submit', function() {
+    showLoader();
+  });
+  document.getElementById('request-form').addEventListener('load', function() {
+    hideLoader();
    });
-  </script>
+ </script>
+ </form>
 </body>
 </html>

@@ -149,7 +149,7 @@ require_once './sense_sms.php';
     if (!empty($prompt)) {
         $datReg .= $emRem.": ".$prompt."\n";
     }
-    $datReg .= $wise.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
+    $datReg .= $wise.": ".$aimSgem."\n<+> ".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);
     file_put_contents($pfCrypt, $datRegCrypt.PHP_EOL, FILE_APPEND);
     $leDatReg = '';
@@ -172,7 +172,7 @@ require_once './sense_sms.php';
    if ($smsNum !== '' && $somApi !=='') {
       sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp);
    }
-   $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem."\n".$aiPar." - ".$emIp." - ".$now."<+>".PHP_EOL;
+   $logon =  "<+> ".$emRem.": ".$system_msg.PHP_EOL.$model.": ".$aimSgem."\n".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$emIp." - ".$now."<+>".PHP_EOL;
    $logNow = $logon;
    $temp = file_get_contents('@NOMGPTLOG');
    $logFull = $logNow.$temp;
@@ -297,7 +297,7 @@ require_once './sense_sms.php';
         if (!empty($prompt)) {
             echo $emRem.": ".htmlspecialchars($prompt)."\n";
         }
-        echo $wise.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
+        echo $wise.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$now;
     ?></textarea><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color: green; font-size:14pt;">Tu Conversacion con : <?php echo $wise; ?></lable><br>
     <button type="button" style="width:275px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar Conversacion</button>

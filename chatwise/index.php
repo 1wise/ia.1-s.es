@@ -247,11 +247,11 @@ require_once './sense_sms.php';
     <h1><a href="@URLAPP">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
     <select style="font-size:14pt;" name="model" id="model" required>
      <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-0613</option>
+     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
      <option value="gpt-4">gpt-4</option>
      <option value="gpt-4-0613">gpt-4-0613</option>
     </select>
-    <input type="text" style="width:480px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave @EMPRESA"><br>
+    <input type="text" style="width:445px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave @EMPRESA"><br>
      <select style="font-size:14pt;" name="wise" id="wise" required>
      <option value="Lao Tzu">Lao Tzu</option>
      <option value="Sun Tzu">Sun Tzu</option>
@@ -300,7 +300,7 @@ require_once './sense_sms.php';
         echo $wise.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
     ?></textarea><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color: green; font-size:14pt;">Tu Conversacion con : <?php echo $wise; ?></lable><br>
-    <button type="button" style="width:280px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar Conversacion</button>
+    <button type="button" style="width:275px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar Conversacion</button>
     <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button>
     <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>

@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 16-03-2023 00:00
+	// Last edit 25-06-2023 00:00
 	//
     $emRem = '';
     $system_msg = '';
@@ -16,6 +16,9 @@ require_once '@DIRYNOMSENSESMS';
     $assistant_msg = '';
     $prompt = '';
     $model = ';)';
+    $aiProTok = '';
+    $aiCompTok = '';
+    $aiToken = '';
     $leDatReg = '';
     $aimSgem = '';
     $aiPar = '';
@@ -83,7 +86,7 @@ require_once '@DIRYNOMSENSESMS';
     }
 
     $anemCrypt =  $emRem.":".$model.":".$aiCry;
-  if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
+    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
     $aiUrl = 'https://api.openai.com/v1/chat/completions';
   } else {
     $aiUrl = 'https://api.openai.com/v1/completions';
@@ -96,7 +99,7 @@ require_once '@DIRYNOMSENSESMS';
 
   // Set the request data
 if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
-	$messages = [];
+    $messages = [];
     if (!empty($system_msg)) {
         $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg, "name" => $remAut];
     }
@@ -168,6 +171,9 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
     }
     // Trim the extracted content to fit the SMS character limit of 154 characters
     $aiPar = $decaiRes['choices'][0]['finish_reason'];
+    $aiProTok = $decaiRes['usage']['prompt_tokens'];
+    $aiCompTok = $decaiRes['usage']['completion_tokens'];
+    $aiToken = $decaiRes['usage']['total_tokens'];
     $aiReslim = $aiCont;
     $aimSgem = str_replace(
     ["?>", "<?", '\"', "\\r", "\\n", "\n\n", "\n\n"],
@@ -188,7 +194,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
     if (!empty($prompt)) {
         $datReg .= "User: ".$prompt."\n";
     }
-    $datReg .= $model.": ".$aimSgem."\n<+> ".$aiPar." - ".$emIp." - ".$now.PHP_EOL;
+    $datReg .= $model.": ".$aimSgem."\n<+> ".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$emIp." - ".$now.PHP_EOL;
     $datRegCrypt = openssl_encrypt($datReg, $metCrypt, $anemCrypt, 0, $iv);
     file_put_contents($pfCrypt, $datRegCrypt.PHP_EOL, FILE_APPEND);
     $leDatReg = '';
@@ -198,7 +204,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
     }
     if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$model.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg .= "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\n";
+      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$model.": \n".$system_msg."\n";
       if (!empty($user_msg)) {
           $miMsg .= "User: ".$user_msg."\n";
       }
@@ -219,13 +225,21 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
    $temp = file_get_contents('@NOMGPTLOG');
    $logFull = $logNow.$temp;
    file_put_contents('@NOMGPTLOG', $logFull);
+   $uso = "<+> ".$emRem." - ".$now." <P>".$aiProTok."<C>".$aiCompTok."<T>".$aiToken."\n";
+   $tempuso = file_get_contents('@NOMUSOGPTLOG');
+   $usofull = $uso.$tempuso;
+   file_put_contents('@NOMUSOGPTLOG', $usofull);
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
  <head>
    <meta name="Peticion a GPT" content="width=device-width; height=device-height; charset=utf-8;">
+   <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
    <style>
+    * {
+    font-family: 'Open Sans';
+    }
     .textbox1 {
     resize: both;
     height: 120px;
@@ -270,15 +284,15 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
 <body>
   <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
     <h1><a href="@URLAPP">Peticion a la API ChatGPT</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
-    <input type="text" style="width:485px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI" required>
+    <input type="text" style="width:440px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
-     <option value="gpt-4">gpt-4</option>
-     <option value="gpt-4-0613">gpt-4-0613</option>
+     <option value="gpt-4">gpt-4-8k</option>
+     <option value="gpt-4-0613">gpt-4-8k-0613</option>
      <option value="gpt-4-32k">gpt-4-32k</option>
      <option value="gpt-4-32k-0613">gpt-4-32k-0613</option>
-     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+     <option value="gpt-3.5-turbo">gpt-3.5-turbo-4k</option>
      <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-4k-0613</option>
      <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
      <option value="text-davinci-003">text-davinci-003</option>
      <option value="text-davinci-002">text-davinci-002</option>
@@ -292,9 +306,9 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
      <option value="babbage">babbage</option>
      <option value="ada">ada</option>
     </select><br>
-    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
+    <input type="text" style="width:390px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="300"></lable>&nbsp;
+    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="4096"></lable>&nbsp;
     <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;
     <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
     <label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;
@@ -313,7 +327,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
         if (!empty($prompt)) {
             echo "User: ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($prompt))."\n";
         }
-        echo $model.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$now;
+        echo $model.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$now;
     ?></textarea><br>
     <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _">
     <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button><br>

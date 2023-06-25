@@ -3,11 +3,11 @@
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 16-06-2023 00:00
+	// Last edit 25-06-2023 00:00
         // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
 	//
 function sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp) {
-    global $aimSgem, $model, $smsNum, $somApi; $emIp;
+    global $aimSgem, $model, $smsNum, $somApi, $emIp;
     $imSgem = str_replace(
        ['\'', '’', '‘', '“', '”', '–', '—', '…', '¢', '€', '©', '®', '™', '°', '²', '³', 'µ', '¹', '¼', '½', '¾', '×', '÷',
         '«', '»', 'Á', 'â', 'ã', 'È', 'ê', 'ë', 'ì', 'ï', 'ð', 'Ì', 'í', 'Î', 'ï', 'ò', 'ó', 'ô', 'õ', 'ö', 'ÿ', 'ù',
@@ -48,8 +48,7 @@ function sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp) {
     // Send each SMS part
     foreach ($smsParts as $part) {
         // Your existing SMS sending logic goes here
-        
-        
+
         $http_status_som = '';
         $now = date("d/m/Y");
         $validesa = 60;
@@ -84,7 +83,7 @@ function sense_sms($aimSgem, $model, $smsNum, $somApi, $emIp) {
           $status_som = curl_getinfo($smsCurl, CURLINFO_HTTP_CODE);
           curl_close($smsCurl);
           $smsLog  = ">".$emIp."<< - >>".$smsNum."<< - >>".$model."<< - >>".$aimSgem."<< - >>".$somRes." - ".date("d-m-Y H:i:s :)").PHP_EOL;
-          file_put_contents('@NOMGPTSMSLOG', $smsLog, FILE_APPEND | LOCK_EX); 
+          file_put_contents('@NOMGPTSMSLOG', $smsLog, FILE_APPEND | LOCK_EX);
 
           if ($status_som === 200) {
            echo " - SMS Enviado con Exito !!".$somRes.PHP_EOL;

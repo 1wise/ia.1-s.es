@@ -229,7 +229,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
    $temp = file_get_contents('@NOMGPTLOG');
    $logFull = $logNow.$temp;
    file_put_contents('@NOMGPTLOG', $logFull);
-   $uso = "<+> ".$emRem." - ".$now." <P>".$aiProTok."<C>".$aiCompTok."<T>".$aiToken."\n";
+   $uso = "<+> ".$emRem." - ".$now." <M>".$model."<P>".$aiProTok."<C>".$aiCompTok."<T>".$aiToken."\n";
    $tempuso = file_get_contents('@NOMUSOGPTLOG');
    $usofull = $uso.$tempuso;
    file_put_contents('@NOMUSOGPTLOG', $usofull);

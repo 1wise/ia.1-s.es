@@ -122,7 +122,7 @@
     </script>
 </head>
 <body>
-  <h2>Enviar SMS</h2>
+  <a href="@URLAPPindex.php"><img src="@URLAPPlogo-trust-grande.png" alt="logo-trust" style="width:15%;"></a>  
   <form id="request-form" method="post" enctype="multipart/form-data">
     <b><label style="font-size:14pt;" for="mobils">Numeros Separats per ;</label></b><br>
     <textarea style="font-size:14pt; width:400px; height:200px" type="text" id="mobils" name="mobils" placeholder="376360121"><?php echo $smsNum; ?></textarea><br><br>

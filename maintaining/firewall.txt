@@ -1,3 +1,2 @@
 sudo ufw disable && sudo ufw enable && sudo ufw default allow outgoing && sudo ufw default deny incoming && sudo ufw allow 22/tcp && sudo ufw allow 80/tcp && sudo ufw allow 443/tcp && sudo ufw allow 8069/tcp && sudo ufw allow 8072/tcp && sudo ufw allow 20/tcp && sudo ufw allow 21/tcp
-# sudo ufw allow 38465:39595/tcp
 

@@ -1,4 +1,9 @@
 <?php
+set_time_limit(300);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+date_default_timezone_set('Europe/Madrid');
   $missatge = '';
   $smsNum = '';
   $somUsu = '@SMSUSER';
@@ -107,34 +112,37 @@
         resize: both;
         height: 200px;
         width: 400px;
-      }
+        font-size: 14pt;
+        font-family: arial;      
+        }
+      b {
+         font-size: 14pt;
+         font-family: arial;
+         font-weight: bold;
+        }
     </style>
-
     <script>
      function countCharacters() {
       var textarea = document.getElementById("missatge");
       var count = textarea.value.length;
       var counter = document.getElementById("characterCount");
-      var sets = Math.floor(count / 154);
+      var sets = Math.floor(count / 154) + 1;
       var remaining = count % 154;
-      counter.innerHTML = sets + " sets of 154 characters, and in 154 ser character count[" + remaining + "/154]";
+      counter.innerHTML = sets + " SMS de 154 caràcters, [" + remaining + "/154]";
      }
     </script>
 </head>
 <body>
-  <a href="@URLAPPindex.php"><img src="@URLAPPlogo-trust-grande.png" alt="logo-trust" style="width:15%;"></a>  
+  <a href="@URLAPPSMSindex.php"><img src="@URLAPPSMSlogo-trust-grande.png" alt="logo-trust" style="width:15%;"></a>  
   <form id="request-form" method="post" enctype="multipart/form-data">
     <b><label style="font-size:14pt;" for="mobils">Numeros Separats per ;</label></b><br>
-    <textarea style="font-size:14pt; width:400px; height:200px" type="text" id="mobils" name="mobils" placeholder="376360121"><?php echo $smsNum; ?></textarea><br><br>
-    <b><label style="font-size:14pt;" for="missatge">Missatge:</label></b><br><br>
-    <textarea class="comment" style="font-size:14pt;" id="missatge" name="missatge" oninput="countCharacters()"><?php echo $missatge; ?></textarea>
-    <p id="characterCount">0/154</p>
-    <b><label style="font-size:14pt;" for="data">Data</label></b>
-    <b><input style="font-size:14pt;" type="text" id="data" name="data" value="<?php echo date("d/m/Y", time()); ?>"></b><br><br>
-    <b><label style="font-size:14pt;" for="validesa">Validesa:</label></b>
-    <b><input style="font-size:14pt;" type="text" id="validesa" name="validesa" value="60" maxlength="2"></b><br><br>
-    <b><input style="font-size:14pt;" type="submit" value="Enviar SMS"></b>
+    <textarea class="comment" type="text" id="mobils" name="mobils" placeholder="376360121" required><?php echo $smsNum; ?></textarea><br><br>
+    <b><label style="font-size:14pt;" for="missatge">Missatge:</label></b><br>
+    <textarea class="comment" Id="missatge" name="missatge" oninput="countCharacters()" required><?php echo $missatge; ?></textarea>
+    <b><p id="characterCount">0/154</p><b>
+    <b><label for="data">Data: </label></b><input type="text" style="width:120px; font-size:14pt; font-family:arial;" id="data" name="data" value="<?php echo date("d/m/Y", time()); ?>" required>
+    <b><label for="validesa"> Validesa: </label></b><input type="text" style="width:30px; font-size:14pt; font-family:arial;" id="validesa" name="validesa" value="60" maxlength="2" required><br><br>
+    <input type="submit" style="width:120px; font-size:14pt; font-family:arial;" value="Enviar SMS">
   </form>
 </body>
 </html>
-

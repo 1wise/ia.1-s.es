@@ -5,13 +5,13 @@ import json
 api_key = input("Su calve API: ")
 user = input("Su usuraio orientativo: ")
 prompt = input("Prompt: ")
-size = input("256x256 o 512x512 o 1024x1024: ")
+size = input("1024x1024 o 1024x1792 o 1024x1792: ")
 num_images = int(input("Cantidad de imagenes 1-10: "))
 output_filename = input("Nombre base de archivo: ")
 
 # Set up the API endpoint and parameters
 url = "https://api.openai.com/v1/images/generations"
-model = "image-alpha-001"
+model = "dall-e-3"
 
 # Define the HTTP headers and request payload
 headers = {

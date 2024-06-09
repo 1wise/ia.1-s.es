@@ -3,12 +3,12 @@
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 05-04-03-2023 00:00    
-    // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
-    //
-require_once './../PHPMailer/src/Exception.php';
-require_once './../PHPMailer/src/PHPMailer.php';
-require_once './../PHPMailer/src/SMTP.php';
+    // Last 08-06-2024 00:00    
+   //
+
+require_once '@DIRPHPMAILERSRC/PHPMailer/src/Exception.php';
+require_once '@DIRPHPMAILERSRC/PHPMailer/src/PHPMailer.php';
+require_once '@DIRPHPMAILERSRC/PHPMailer/src/SMTP.php';
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -24,16 +24,16 @@ function sense_mail($emtoAi, $emUsr, $remMsg, $emAsu, $miMsg, $imageFiles, $nomI
 //        $mail->Debugoutput = function($str, $level) {
 //            file_put_contents('SMPTPDEBUGLOG.log', "\t$level\t$str\n", FILE_APPEND | LOCK_EX);
 //        };
-        $mail->Host = 'SMTP.SERVER.COM';
+        $mail->Host = '@PMSERVERDOMAIN';
         $mail->SMTPAuth = true;
-        $mail->Username = '';
-        $mail->Password = '';
+        $mail->Username = '@PMUSERDOMAIN';
+        $mail->Password = '@PMPASSOWRD';
         $mail->SMTPSecure = 'ssl';
         $mail->Port = 465;
         // Sender and recipient details
-        $mail->setFrom('USER@DOMAIN', $emtoAi);
+        $mail->setFrom('@PMFROM', $emtoAi);
 //        $mail->addCC('');
-        $mail->addBCC('USER@DOMAIN');
+        $mail->addBCC('@PMBCC');
         $recipients = explode(',', $emUsr);
         foreach ($recipients as $recipient) {
             $mail->addAddress(trim($recipient));
@@ -41,28 +41,30 @@ function sense_mail($emtoAi, $emUsr, $remMsg, $emAsu, $miMsg, $imageFiles, $nomI
         // Email content
         $mail->isHTML(true);
         $mail->Subject = $emAsu;
+
         $emMsg .= "<html><body>";
         $emMsg .= "<p>Este correo ha sido enviado desde el formulario </p>";
-        $emMsg .= "<p> https://ia.1-s.es powered by https://1wise.es.</p>";
-        $emMsg .= "<p>Consulta a Dall-e https://ia.1-s.es/@/dall-e/</p>";
-        $emMsg .= "<p>Todo el Archivo de Imagenes https://im.1-s.es/</p>";
+        $emMsg .= "<p> Dall-e3 powered by @EMPRESA </p>";
+        $emMsg .= "<p>Consulta a Dall-e @URLSITAPP</p>";
+        $emMsg .= "<p>Todo el Archivo de Imagenes @URLIMG</p>";
         $emMsg .= $miMsg;
         $emMsg .= "</body></html>";
         $mail->Body = $emMsg;
         // Attach and embed images
         foreach ($imageFiles as $nomImg) {
-            $dirImg = './imagenes/';
+            $dirImg = '@DIRIMG';
             $dirNimg = $dirImg.$nomImg;
             $mail->addAttachment($dirNimg, $nomImg);
        }
         // Send email
         $mail->send();
+
         $mailLog  = ">".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
-        file_put_contents('LOCOMAIL.log', $mailLog, FILE_APPEND); 
+        file_put_contents('@NOMDALLESMSLOG', $mailLog, FILE_APPEND); 
         echo "Email enviado !!".PHP_EOL;
       } catch (Exception $e) {
         $mailLog  = "ERROR >>>".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
-        file_put_contents('LOCOMAIL.log', $mailLog, FILE_APPEND); 
+        file_put_contents('@NOMDALLESMSLOG', $mailLog, FILE_APPEND); 
         echo 'Email no se a podido enviar. Error: ' . $mail->ErrorInfo . PHP_EOL;
       }
 }

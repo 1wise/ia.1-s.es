@@ -3,13 +3,12 @@
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 05-04-03-2023 00:00
-    // Mòdul natiu per integrar la passarel·la API SMS d'Andorra Telecom.
+    // Last edit 08-06-2024 00:00
     //
 function sense_sms($remMsg, $nomImg, $smsNum, $somApi) {
       global $remMsg, $nomImg, $smsNum, $somApi;
       $emIp = $_SERVER['REMOTE_ADDR'];
-      $imgUrl = 'https://iabots.1-s.es/dall-e/imagenes/';
+      $imgUrl = '@URLIMG';
       $smsMsg =  $imgUrl.$nomImg." -".$remMsg;;
       $http_status_som = '';
       $now = date("d/m/Y");
@@ -46,7 +45,8 @@ function sense_sms($remMsg, $nomImg, $smsNum, $somApi) {
         $status_som = curl_getinfo($smsCurl, CURLINFO_HTTP_CODE);
         curl_close($smsCurl);
         $smsLog  = ">".$emIp."<< - >>".$smsNum."<< - >>".$remMsg."<< - >>".basename($imageFile)."<< - >>".$somRes." - ".date("d-m-Y H:i:s :)").PHP_EOL;
-        file_put_contents('LOCOSMS.log', $smsLog, FILE_APPEND);
+        file_put_contents('@NOMDALLESMSLOG', $smsLog, FILE_APPEND);
+        sleep(1);
         if ($status_som === 200) {
            echo "SMS Enviado con Exito !!".$somRes.PHP_EOL;
         } else {

@@ -3,55 +3,108 @@
   <head>
 <meta charset="UTF-8">
 <meta name="Peticion a Dall-e" content="width=device-width; height=device-height; charset=utf-8;">
-  <title>Peticion a  la API DALL-E</title>
-    <style>
-      .comment {
-        resize: none;
-        height: 440px;
-        width: 680px;
-      }
-      .button-link {
-        display: inline-block;
-        font-size: 16pt;
-        text-align: right;
-        color: #FFF;
-        background-color: #4CAF50;
-        border: none;
-        padding: 10px 20px;
-        text-decoration: none;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-left: 40px; 
-      }
-      .button-link:hover {
-         background-color: #45a049;
-      }
-  /* New styles for the loader */
-  .loader {
-    border: 16px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 16px solid #3498db;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-   </style>
-   <script>
+  <title>Peticion a la API DALL-E</title>
+   <link href='https://fonts.googleapis.com/css?family=Caladea' rel='stylesheet'>
+   <style>
+    * {
+      font-family: 'Caladea';
+    }
+    h1 {
+      font-size: 28pt;
+      color: green;
+    }
+    .comment {
+      resize: both;
+      font-size: 16pt;
+      height: 410px;
+      width: 680px;
+      maxlenght: 998;
+    }
+    .button-link {
+      display: inline-block;
+      font-size: 16pt;
+      text-align: right;
+      color: #FFF;
+      background-color: #4CAF50;
+      border: none;
+      padding: 10px 20px;
+      text-decoration: none;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-left: 40px; 
+    }
+    .button-link:hover {
+       background-color: #45a049;
+    }
+    /* New styles for the loader */
+    .loader {
+      border: 16px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 16px solid #3498db;
+      width: 120px;
+      height: 120px;
+      animation: spin 2s linear infinite;
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .alert-success{
+      z-index: 1;
+      background: #D4EDDA;
+      font-size: 18px;
+      padding: 20px 40px;
+      min-width: 420px;
+      position: fixed;
+      right: 0;
+      top: 10px;
+      border-left: 8px solid #3AD66E;
+      border-radius: 4px;
+    }
+    .alert-error{
+      z-index: 1;
+      background: #FFF3CD;
+      font-size: 18px;
+      padding: 20px 40px;
+      min-width: 420px;
+      position: fixed;
+      right: 0;
+      top: 10px;
+      border-left: 8px solid #FFA502;
+      border-radius: 4px;
+    }
+    #progress-bar {
+      width: 680px;
+      height: 20px;
+      background-color: #f1f1f1;
+    }
+    #progress {
+      height: 100%;
+      background-color: #4caf50;
+      width: 0%;
+    }
+    #progress-bar-mask {
+      width: 680px;
+      height: 20px;
+      background-color: #f1f1f1;
+    }
+    #progress-mask {
+      height: 100%;
+      background-color: #4caf50;
+      width: 0%;
+    }
+  </style>
+  <script>
     // Dall-e2 form by 1wise.es
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 06-04-03-2023 00:00
+    // Last edit 08-06-2024 00:00
     //
    document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
@@ -88,12 +141,12 @@
   });
 
   if (imageUrls) {
-    const imageUrlArray = imageUrls.split(',');
+    const imageUrlsArray = imageUrls.split(',');
     const imageContainer = document.getElementById('image-container');
 
-    imageUrlArray.forEach((imageUrl) => {
+    imageUrlsArray.forEach((imageUrls) => {
       const imageElement = document.createElement('img');
-      imageElement.src = imageUrl;
+      imageElement.src = imageUrls;
       imageElement.alt = 'Tu obra con Dall-e';
       imageElement.style.margin = '5px'; // Add some margin between images
 
@@ -101,18 +154,62 @@
       });
     }
   });
+
+  function pasteClipboard(event) {
+    // Check if the event is a double-click
+    if (event.detail === 2) {
+      // Get the clipboard content
+      navigator.clipboard.readText()
+        .then(text => {
+          // Paste the clipboard content into the input field
+          event.target.value = text;
+        })
+        .catch(err => {
+          console.error('Failed to read clipboard contents: ', err);
+        });
+    }
+  }
   </script>
 </head>
 <body>
-    <form accept-charset="UTF-8" id="request-form" method="post" action="dall-e2.php" enctype="multipart/form-data" onsubmit="return updateIframe()"> 
-    <h2>Peticion a la API DALL-E <a href="https://iabots.1-s.es/dall-e/imagenes/index.php" target="_blank" rel="noreferrer noopener" class="button-link">!!!!! Todas Las Imagenes !!!!!</a></h2>
-    
-    <textarea class="comment" type="text" style="font-size:14pt;" maxlength="998" id="prompt" name="prompt" placeholder="Entrada de texto" required></textarea><br><br>
-    <input style="text-align:left; width:680px; font-size:16pt;" type="text" id="emrem" name="emrem" placeholder="Usuario, orientativo para Dall-e"><br><br>
+    <form accept-charset="UTF-8" id="request-form" method="post" action="dall-e.php" enctype="multipart/form-data" onsubmit="return updateIframe()"> 
+    <h1>Peticion a la API DALL-E <a href="@URLIMG" target="_blank" rel="noreferrer noopener" class="button-link">!!! Todas Las Imagenes !!!</a></h1>
+    <textarea class="comment" type="text" ondblclick="pasteClipboard(event)" id="prompt" maxlength="998" name="prompt" placeholder="Para generaciones solo rellenar este campo. Para ediciones rellenar este campo y seleccionar la imagen, la mascara es opcional. Para variaciones no rellenar este campo y selecionar la imagen. La imagen y la mascara deben ser del mismo tamaño, ratio 1:1"></textarea><br><br>
+    <input style="text-align:left; width:400px; font-size:16pt;" type="text" ondblclick="pasteClipboard(event)" id="emrem" name="emrem" placeholder="Usuario, orientativo para Dall-e">
+    <select style="font-size:16pt;" id="tipocon" name="tipocon">
+      <option value="generations">Generaciones</option>
+      <option value="editsConMas">Edicion con mascara dall-e-2</option>
+      <option value="editsSinMas">Edicion sin mascar dall-e-2</option>
+      <option value="variations">Variaciones dall-e-2</option>
+    </select><br><br>
+    <select style="font-size:16pt;"  id="numimg" name="numimg">
+      <option value="1">01</option>
+      <option value="2">02</option>
+      <option value="3">03</option>
+      <option value="4">04</option>
+      <option value="5">05</option>
+      <option value="6">06</option>
+      <option value="7">07</option>
+      <option value="8">08</option>
+      <option value="9">09</option>
+      <option value="10">10</option>
+    </select>&nbsp;
+    <select style="font-size:16pt;" id="size" name="size">
+      <option value="256x256">256x256</option>
+      <option value="512x512">512x512</option>
+      <option value="1024x1024">1024x1024</option>
+      <option value="1024x1792">1024x1792</option>
+      <option value="1792x1024">1792x1024</option>
+    </select>&nbsp;
+    <select style="font-size:16pt;" id="model" name="model">
+      <option value="dall-e-3">dall-e-3</option>
+      <option value="dall-e-2">dall-e-2</option>
+    </select>&nbsp;
 
-    <b><label style="font-size:16pt;" for="numimg">Nº de Imagenes:</label></b>
-    <input type="text" maxlength="2" style="width:70px; font-size:16pt;" id="numimg" name="numimg" value="1">
-    <script>
+    <input style="width:400px; font-size:14pt;" type="text" id="api-key" ondblclick="pasteClipboard(event)" name="api-key" placeholder="API Key OpenAI https://platform.openai.com" required><br><br>
+    <input style="text-align:center; width:680px; font-size:16pt" id="submit" type="submit" name="submit" value="Generar imagen NO darle cuando esta en ROJO"><br><br>
+    <div id="loader" class="loader" style="display:none"></div>
+   <script>
     function showLoader() {
       const loader = document.getElementById('loader');
       const submitButton = document.getElementById('submit');
@@ -136,48 +233,141 @@
     document.getElementById('log-iframe').addEventListener('load', function() {
       hideLoader();  
    });
-   </script>  
-    <select style="font-size:16pt;"  id="model" name="model">
-      <option value="image-alpha-001">image-alpha-001</option>
-      <option value="image-alpha-002">image-alpha-002</option>
-      <option value="image-alpha-003">image-alpha-003</option>
-      <option value="dall-e2">dall-e2</option>
-    </select>&nbsp;&nbsp;&nbsp;&nbsp;
-
-    <select style="font-size:16pt;" id="size" name="size">
-      <option value="256x256">256x256</option>
-      <option value="512x512">512x512</option>
-      <option value="1024x1024">1024x1024</option>
-    </select><br><br>
-
-    <b><input style="font-size:16pt;" id="submit" type="submit" name="submit" value="Generar Imagen"></b>
-    <div id="loader" class="loader" style="display: none;"></div>
-
-    &nbsp;
-    <b><label style="font-size:16pt;" for="api-key">API:</label></b>
-    <input style="width:450px; font-size:12pt;" type="text" id="api-key" name="api-key" placeholder="API Key" required><br><br>
-  </form>
-  <iframe id="log-iframe" src="https://iabots.1-s.es/dall-e/Dall-e2.log" height="200" width="680" title="Dall-e Registro"></iframe><br>
-  <div id="image-container"></div>
-
-  <script>
-  if (imageUrl) {
-    const imageElement = document.createElement('img');
-    imageElement.src = imageUrl;
-    imageElement.alt = 'Tu obra con Dall-e';
-    const imageContainer = document.getElementById('image-container');
-    imageContainer.appendChild(imageElement);
-  };
-    // Observe the iframe src changes
-    const iframe = document.getElementById('log-iframe');
-    const observer = new MutationObserver(function (mutations) {
-      mutations.forEach(function (mutation) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
-          hideLoader();
+   </script>
+      <input type="file" style="font-size: 14pt; width: 420px; height: 28px" id="archImagen" name="archImagen" size="4000000">
+      <label style="font-size: 14pt;" for="archImagen">Imagen a modificar 1:1 Max. 4MB</label>
+      <div id="size-warning" style="color: red;"></div>
+      <div id="tama-imagenes"></div>
+      <div id="progress-details">0% - 0 B / 0 B</div>
+      <div id="progress-bar"><div id="progress"></div></div><br>
+      <input type="file" style="font-size: 14pt; width: 420px; height: 28px" id="archMascara" name="archMascara" size="4000000">
+      <label style="font-size: 14pt;" for="archMascara">Mascara Max. 4MB</label>
+      <div id="size-warning-mask" style="color: red;"></div>
+      <div id="tama-mascaras"></div>
+      <div id="progress-details-mask">0% - 0 B / 0 B</div>
+      <div id="progress-bar-mask"><div id="progress-mask"></div></div><br>
+    <script type="text/javascript">
+      function displayImageSize(imageFile, dimensionsDivId) {
+        var img = new Image();
+        img.src = URL.createObjectURL(imageFile);
+    
+        img.onload = function() {
+          var dimensionsDiv = document.getElementById(dimensionsDivId);
+          var dimensions = `${img.width} x ${img.height}`;
+          dimensionsDiv.textContent = dimensions;
+        };
+      }
+    
+      function compareImageSizes(imageFile1, imageFile2) {
+        var img1 = new Image();
+        img1.src = URL.createObjectURL(imageFile1);
+    
+        var img2 = new Image();
+        img2.src = URL.createObjectURL(imageFile2);
+    
+        img1.onload = function() {
+          img2.onload = function() {
+            if (img1.width === img2.width && img1.height === img2.height) {
+              alert("Ambas imágenes tienen las mismas dimensiones.");
+            } else {
+              alert("Las dimensiones de las dos imágenes son diferentes.");
+            }
+          };
+        };
+      }
+    
+      function uploadFile(file, progressBarId, progressDetailsId, sizeWarningId) {
+        var xhr = new XMLHttpRequest();
+        var formData = new FormData();
+        formData.append('file', file);
+    
+        xhr.upload.addEventListener('progress', function(event) {
+          var percent = (event.loaded / event.total) * 100;
+          document.getElementById(progressBarId).style.width = percent + '%';
+    
+          var uploadedSize = event.loaded;
+          var totalSize = event.total;
+          document.getElementById(progressDetailsId).textContent = `${percent.toFixed(2)}% - ${formatFileSize(uploadedSize)} / ${formatFileSize(totalSize)}`;
+        });
+    
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            // File upload completed
+          }
+        };
+    
+        xhr.open('POST', 'index.html', true);
+        xhr.send(formData);
+      }
+    
+      function formatFileSize(size) {
+        var units = ['B', 'KB', 'MB', 'GB'];
+        var index = 0;
+        while (size >= 1024 && index < units.length - 1) {
+          size /= 1024;
+          index++;
         }
+        return `${size.toFixed(2)} ${units[index]}`;
+      }
+    
+      function updateSizeWarning(totalSize, sizeWarningId) {
+        var sizeWarning = document.getElementById(sizeWarningId);
+        if (totalSize > 4000000) {
+          sizeWarning.textContent = 'El tamaño del archivo supera los 4 MB. Reduzca el tamaño del archivo.';
+        } else {
+          sizeWarning.textContent = '';
+        }
+      }
+    
+      function handleFileUpload(file, progressBarId, progressDetailsId, sizeWarningId) {
+        var totalSize = file.size;
+        updateSizeWarning(totalSize, sizeWarningId);
+    
+        if (totalSize <= 4000000) {
+          uploadFile(file, progressBarId, progressDetailsId, sizeWarningId);
+        }
+      }
+      document.getElementById('archImagen').addEventListener('change', function(event) {
+        displayImageSize(event.target.files[0], 'tama-imagenes');
+        var archImagenMask = document.getElementById('archMascara');
+        if (archImagenMask.files.length > 0) {
+          displayImageSize(archImagenMask.files[0], 'tama-mascaras');
+          compareImageSizes(event.target.files[0], archImagenMask.files[0]);
+        }
+        handleFileUpload(event.target.files[0], 'progress', 'progress-details', 'size-warning');
       });
-    });
-    observer.observe(iframe, { attributes: true }); 
+    
+      document.getElementById('archMascara').addEventListener('change', function(event) {
+        displayImageSize(event.target.files[0], 'tama-mascaras');
+        var archImagenFile = document.getElementById('archImagen');
+        if (archImagenFile.files.length > 0) {
+          displayImageSize(archImagenFile.files[0], 'tama-imagenes');
+          compareImageSizes(archImagenFile.files[0], event.target.files[0]);
+        }
+        handleFileUpload(event.target.files[0], 'progress-mask', 'progress-details-mask', 'size-warning-mask');
+      });
+   </script>
+   </form>
+    <iframe id="log-iframe" src="@URLAPP@NOMDALLELOG" height="320" width="680" title="Dall-e Registro"></iframe><br>
+    <div id="image-container"></div>
+   <script> 
+    if (imageUrls) {
+      const imageElement = document.createElement('img');
+      imageElement.src = imageUrls;
+      imageElement.alt = 'Tu obra con Dall-e';
+      const imageContainer = document.getElementById('image-container');
+      imageContainer.appendChild(imageElement);
+    };
+     // Observe the iframe src changes
+     const iframe = document.getElementById('log-iframe');
+     const observer = new MutationObserver(function (mutations) {
+       mutations.forEach(function (mutation) {
+         if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+           hideLoader();
+         }
+       });
+     });
+    observer.observe(iframe, { attributes: true });
   </script>
 </body>
 </html>

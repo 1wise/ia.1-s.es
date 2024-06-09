@@ -1,14 +1,17 @@
 <?php
-global $emtoAi, $emUsr, $remMsg, $emAsu, $miMsg, $imageFiles, $dirNimg, $nomImg, $smsNum, $somApi;
+set_time_limit(300);
+date_default_timezone_set('Europe/Madrid');
+global $emtoAi, $emUsr, $remMsg, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi;
 require_once './sense_mail.php';
 require_once './sense_sms.php';
-    // Dall-e2 form by 1wise.es
-    // http://ia.1-s.es
-    // http://1wise.es
-    //
-    // Last edit 05-04-03-2023 00:00
-    //
-  function wrap_text($text, $max_width = 80) {
+
+// Dall-e2 form by 1wise.es
+// http://ia.1-s.es
+// http://1wise.es
+//
+// Last edit 08-06-2024 00:00
+//
+function wrap_text($text, $max_width = 80) {
     return wordwrap($text, $max_width, "\n", true);
 }
 
@@ -22,133 +25,237 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
     return $output;
 }
 
-    $emIp = $_SERVER['REMOTE_ADDR'];
-    $somUsu = '';
-    $somPas = '';
-    $somApi = base64_encode("$somUsu:$somPas");
-    $emDat = $_POST['prompt'];
-    $nowForm = date("d-m-Y H:i:s ");
-    $prompt = $_POST['prompt'];
-    $size = $_POST['size'];
-    $numimg = intval($_POST['numimg']);
+$emIp = $_SERVER['REMOTE_ADDR'];
+$somUsu = '@SMSUSER';
+$somPas = '@SMSPASSWORD';
+$somApi = base64_encode("$somUsu:$somPas");
+$result = '';
+$image_str = '';
+$tempFilePath = '';
+$im = '';
+$httpcode = '-';
+$totalSize = 0;
+$fileCount = 0;
+$fileName = '';
+$fileNameMask = '';
+$archImagen = '';
+$archMascara = '';
+$prompt = '';
+$apiUrl = '';
+$capAI = '';
+$encdata = '';
+$aiCurl = '';
+$model = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] == true) {
+    $model = $_POST['model'];
     $emRem = $_POST['emrem'];
+    $size = $_POST['size'];
+    $prompt = $_POST['prompt'];
+    $numimg = $_POST['numimg'];
+    $archImagen = $_FILES['archImagen'];
+    $archMascara = $_FILES['archMascara'];
+    $emtoAi = '';
+    $apiKey = $_POST['api-key'];
     if (strpos($emRem, "-") !== false) {
-      $emtoAi = strstr($emRem, '-', true);
+        $emtoAi = strstr($emRem, '-', true);
     } else {
-         $emtoAi = $emRem;
+        $emtoAi = $emRem;
     }
     $emUsr = '';
     if (preg_match('~_m_(.*?)_m_~', $emRem, $emUsch)) {
-       $emUsr = $emUsch[1];
+        $emUsr = $emUsch[1];
     }
+
     $smsNum = '';
-    if (preg_match('~_conM_(.*?)_Isms_~', $emRem, $smsNch)) {
+    if (preg_match('~@GREPINSMS(.*?)@GREPOUTSMS~', $emRem, $smsNch)) {
         $smsNum = $smsNch[1];
     }
+
     $remMsg = '';
     if (preg_match('~_mSg_(.*?)_mSg_~', $emRem, $mstch)) {
         $remMsg = $mstch[1];
     }
-    $emTai = $emtoAi." con Dall-e: ".$emDat;
-    $model = $_POST['model'];
-    $apiKey = $_POST['api-key'];
-    $imgUrl = 'https://iabots.1-s.es/dall-e/imagenes/';
-    $apiUrl = 'https://api.openai.com/v1/images/generations';
-    $emIp = $_SERVER['REMOTE_ADDR'];
- if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] == true) {
-    $imageFiles = [];
-    $headers = array(
-      'Authorization: Bearer ' . $apiKey,
-      'Content-Type: application/json',
-    );
-    $data = array(
-      'model' => $model,
-      'prompt' => $prompt,
-      'size' => $size,
-      'n' => $numimg,
-      'user' => $emtoAi,
-    );
-
-    $aiCurl = curl_init();
-    curl_setopt($aiCurl, CURLOPT_URL, $apiUrl);
-    curl_setopt($aiCurl, CURLOPT_POST, 1);
-    curl_setopt($aiCurl, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($aiCurl, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($aiCurl, CURLOPT_HTTPHEADER, $headers);
-
-    $aiRES = curl_exec($aiCurl);
-    $httpcode = curl_getinfo($aiCurl, CURLINFO_HTTP_CODE);
-    curl_close($aiCurl);
-
-   if ($httpcode == 200) {
-      $now = date(' d-m-y H:m:s ');
-      $emIp = $_SERVER['REMOTE_ADDR'];
-      $result = json_decode($aiRES, true);
-      $images = $result['data'];
-      $texto = "<br><b>".$prompt." ".date("y-m-d H:i:s")."</b><br>";
-      $chunk_size = 30;
-      $texto = chunk_split($texto, $chunk_size, "\r\n"); 
-      $imageFiles = array();
-      $imageFiles_str = '';
-      $imageFiles_pre = '';
-      foreach ($images as $image) {
-         $imageUrl = $image['url'];
-         $imageData = file_get_contents($imageUrl);
-         $nowForm = microtime(true);
-         $milliseconds = sprintf('%03d', ($nowForm - floor($nowForm)) * 1000);
-         $formattedDate = date('ymdHis.' . $milliseconds, $nowForm);
-         $nomImg = strstr($emtoAi, ' ', true) . "_" . $model . "_" . $formattedDate . ".png";
-         $dirImg = './imagenes/';
-         $dirNimg = $dirImg.$nomImg;
-         $input_file = $dirNimg;
-         $caption = $emTai;
-         file_put_contents($dirNimg, $imageData);
-         add_caption_to_png_metadata($input_file, $input_file, $caption);
-         $imageFiles[] = $nomImg;
-         $image_str .= $imgUrl . $nomImg . ",";
+    if ($_POST['tipocon'] == 'generations' && isset($_POST['prompt'])) {
+        $emTai = $emtoAi." con ".$model." ".$prompt;
+        $nowForm = date(' d-m-y H:i:s ');
+        $apiKey = $_POST['api-key'];
+        $apiUrl = 'https://api.openai.com/v1/images/generations';
+        $capAi = array(
+            'Authorization: Bearer ' . $apiKey,
+            'Content-Type: application/json',
+        );
+        $data = array(
+            'model' => $model,
+            'prompt' => $prompt,
+            'size' => $size,
+            'n' => intval($numimg),
+            'response_format' => 'b64_json',
+            'user' => $emtoAi,
+        );
+        $encdata = json_encode($data);
+    } elseif ($_POST['tipocon'] == 'editsConMas' && isset($_FILES['archImagen']) && isset($_FILES['archMascara']) && isset($_POST['prompt'])) {
+         $totalSize = $_FILES['archImagen']['size'];
+         $tmpFilePath = $_FILES['archImagen']['tmp_name'];
+         $fileName = $_FILES['archImagen']['name'];
+         $totalSizeMask = $_FILES['archMascara']['size'];
+         $tmpFilePathMask = $_FILES['archMascara']['tmp_name'];
+         $fileNameMask = $_FILES['archMascara']['name'];
+         $emTai = $emtoAi." con ".$model." ".$prompt;
+         $nowForm = date(' d-m-y H:i:s ');
+         $apiKey = $_POST['api-key'];
+         if ($tmpFilePath != "" && is_uploaded_file($tmpFilePath) && $totalSize <= 4000000 && $tmpFilePathMask != "" && is_uploaded_file($tmpFilePathMask) && $totalSizeMask <= 4000000) {
+           $targetPath = './uploads/' . $fileName;
+           move_uploaded_file($tmpFilePath, $targetPath);
+           $targetPathMask = './uploads/' . $fileNameMask;
+           move_uploaded_file($tmpFilePathMask, $targetPathMask);
+           $apiUrl = 'https://api.openai.com/v1/images/edits';
+           $capAi = array(
+              'Authorization: Bearer ' . $apiKey,
+            );
+           $data = array(
+              'model' =>  "dall-e-2",
+              'image' => new CURLFile($targetPath),
+              'mask' => new CURLFile($targetPathMask),
+              'prompt' => $prompt,
+              'size' => $size,
+              'n' => intval($numimg),
+              'response_format' => 'b64_json',
+              'user' => $emtoAi,
+            );
+            $encdata = $data;
+        }
+    } elseif ($_POST['tipocon'] == 'editsSinMas' && isset($_FILES['archImagen']) && isset($_POST['prompt'])) {
+         $totalSize = $_FILES['archImagen']['size'];
+         $tmpFilePath = $_FILES['archImagen']['tmp_name'];
+         $fileName = $_FILES['archImagen']['name'];
+         $emTai = $emtoAi." con ".$model." ".$prompt;
+         $nowForm = date(' d-m-y H:i:s ');
+         $apiKey = $_POST['api-key'];
+      if ($tmpFilePath != "" && is_uploaded_file($tmpFilePath) && $totalSize <= 4000000) {
+           $targetPath = './uploads/' . $fileName;
+           move_uploaded_file($tmpFilePath, $targetPath);
+           $apiUrl = 'https://api.openai.com/v1/images/edits';
+           $capAi = array(
+              'Authorization: Bearer ' . $apiKey,
+            );
+           $data = array(
+              'model' =>  "dall-e-2",
+              'image' => new CURLFile($targetPath),
+              'prompt' => $prompt,
+              'size' => $size,
+              'n' => intval($numimg),
+              'response_format' => 'b64_json',
+              'user' => $emtoAi,
+            );
+            $encdata = $data;
          }
-
-      $emAsu = "Imagen de Dall-e Cortesia de: " . $emtoAi . " via https://ia.1-s.es ";
-      $miMsg = "<p><< - >>".$emtoAi."<< - >>".$remMsg."<< - >>".$emDat."<< - From - >>".$emIp." - ".$now."<< - Greetings ;)</p>";  
-        // Start output buffering
-      ob_start();
-      if ($emUsr !== '') {
-      sense_mail($emtoAi, $emUsr, $remMsg, $emAsu, $miMsg, $imageFiles, $nomImg);
-       }
-      foreach ($imageFiles as $nomImg) {
-         if ($smsNum !== '' && $somApi !=='') {
-            sense_sms($remMsg, $nomImg, $smsNum, $somApi);
-         }
+     } elseif ($_POST['tipocon'] == 'variations' && isset($_POST['prompt'])) {
+         $totalSize = $_FILES['archImagen']['size'];
+         $tmpFilePath = $_FILES['archImagen']['tmp_name'];
+         $fileName = $_FILES['archImagen']['name'];
+         if ($tmpFilePath != "" && is_uploaded_file($tmpFilePath) && $totalSize <= 4000000) {
+           $targetPath = './uploads/' . $fileName;
+           move_uploaded_file($tmpFilePath, $targetPath);
+           $emTai = $emtoAi." con ".$model." ".$prompt;
+           $nowForm = date(' d-m-y H:i:s ');
+           $apiKey = $_POST['api-key'];
+           $apiUrl = 'https://api.openai.com/v1/images/variations';
+           $capAi = array(
+              'Authorization: Bearer ' . $apiKey,
+            );
+           $data = array(
+              'model' =>  "dall-e-2",
+              'image' => new CURLFile($targetPath),
+              'size' => $size,
+              'n' => intval($numimg),
+              'response_format' => 'b64_json',
+              'user' => $emtoAi,
+            );
+        $encdata = $data;
       }
-     $debugOutput = ob_get_contents();
-     ob_end_clean();
-     file_put_contents('maildebug.log', $debugOutput, FILE_APPEND);
-
-     $logon = "<+>".$emDat."<->".$model."<->".$size."<->".$numimg."<->".$emtoAi."<->".$emIp."<->".date(" d-m-Y.H:i:s :)")."<+>".PHP_EOL;
-     foreach ($imageFiles as $nomImg) {
-     $logon = $logon."<I>\n"."https://iabots.1-s.es/dall-e/imagenes/".$nomImg."\n<I>".PHP_EOL;
+     } else {
+        $logon = '<-<-ERROR->->'.PHP_EOL;
+        file_put_contents('Dall-e2.txt', $logon, FILE_APPEND);
+        header("Location: index.html" . $image_str);
+        exit;
      }
-
-     $logNow = $logon;
-     $temp = file_get_contents('Dall-e2.log');
-     $logFull = $logNow.$temp;
-     file_put_contents('Dall-e2.log', $logFull);
-
-  } else {
-       echo 'Error: '.PHP_EOL.$response.$userin;
-       $emIp = $_SERVER['REMOTE_ADDR'];
-       $rapidcode = str_replace(array("\n", "\r"), '', $response);
-       $logon = "<-->".$rapidcode."<->".$emIp."<->".$emDat."<->".$model."<->".$size."<->".$numimg."<->".$emtoAi."<->".date(" d-m-Y H:i:s :)<-->").PHP_EOL;
-       file_put_contents('Dall-e2.log', $logon, FILE_APPEND); 
+     ob_start();
+   if ($apiUrl != '' && $encdata != '' && $capAi != '') {
+     $aiCurl = curl_init($apiUrl);
+     curl_setopt($aiCurl, CURLOPT_POST, 1);
+     curl_setopt($aiCurl, CURLOPT_POSTFIELDS, $encdata);
+     curl_setopt($aiCurl, CURLOPT_HTTPHEADER, $capAi);
+     curl_setopt($aiCurl, CURLOPT_RETURNTRANSFER, true);
+     $aiRES = curl_exec($aiCurl);
+     $httpcode = curl_getinfo($aiCurl, CURLINFO_HTTP_CODE);
+     curl_close($aiCurl);
   }
+ }
+  if ($httpcode == 200) {
+      $nowForm = date('d-m-y H:i:s');
+        $emIp = $_SERVER['REMOTE_ADDR'];
+        $result = json_decode($aiRES, true);
+        $datas = $result['data'];
+        $imageNoms = array();
+        $numsimgs = '1';
+        $image_str = '';
+        $image_log = '';
+        foreach ($datas as $dato) {
+            $imgUrl = "@URLIMG";
+            $image = $dato['b64_json'];
+            $decodedImageData = base64_decode($image);
+            $imgcont = date('ymdHis.').$numsimgs .".".$numimg;
+            $semtoAi = strstr($emtoAi, ' ', true);
+            if ($semtoAi == '') {
+              $nomImg = $emtoAi."-Dall-E-".$imgcont.".png";
+            } else {
+              $nomImg = strstr($emtoAi, ' ', true)."-Dall-E-".$imgcont.".png";
+            }
+            $dirImg = '@DIRIMG';
+            $dirNimg = $dirImg.$nomImg;
+            file_put_contents($dirNimg, $decodedImageData);
+            $input_file = $dirNimg;
+            $caption = $emTai;
+            $imageNom = $nomImg;
+            $imageNoms[] = $imageNom;
+            add_caption_to_png_metadata($input_file, $caption);
+            $numsimgs = intval($numsimgs) + 1;
+            $image_str .= $imgUrl . $nomImg . ",";
+            $image_log .= "<I>  " . $imgUrl . $nomImg . "  <I>\n";
+            sleep(1);
+        }
+        $image_str = substr($image_str, 0, -1);
+        $emAsu = "Imagen de Dall-e Cortesia de: ".$emtoAi." via @EMPRESA ";
+        $miMsg = "<p><< - >>".$emtoAi."<< - >>".$remMsg."<< - >>".$prompt." - ".$fileName." - ".$fileNameMask." - ".$tipocon."<< - From - >>".$emIp." - ".$nowForm."<< - Greetings ;)</p>";
 
-   $aiRES = array(
-       'ready' => true
-   );
-   header('Content-Type: application/json');
-   echo json_encode($aiRES); 
-   // Redirect back to the HTML page with the 'image_urls' parameter
+        if ($emUsr !== '') {
+            sense_mail($emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom);
+        }
+
+        foreach ($imageNoms as $imageNom) {
+            if ($smsNum !== '' && $somApi !=='') {
+                sense_sms($remMsg, $imageNom, $smsNum, $somApi);
+            }
+        }
+
+        $logon = "<+>". $prompt." - ".$fileName." - ".$fileNameMask." - ".$tipocon." <+>"."<->".$size."<->".$numimg."<->".PHP_EOL.$emtoAi."<->".$emIp."<->".$nowForm."<+>".PHP_EOL;
+        $logNow = $logon . $image_log;
+        $temp = file_get_contents('@NOMDALLELOG');
+        $logFull = $logNow . $temp;
+        file_put_contents('@NOMDALLELOG', $logFull);
+   } else {
+        $emIp = $_SERVER['REMOTE_ADDR'];
+        $logon = "<-ERROR->".$httpcode."<->".$emIp."<->".$prompt." - ".$fileName." - ".$fileNameMask." - ".$tipocon."<->".$size."<->".$numimg."<->".$emtoAi."<->".$nowForm.PHP_EOL;
+        file_put_contents('@NOMDALLELOG', $logon, FILE_APPEND);
+   }
+    $aiRES = array(
+        'ready' => true
+    );
+
+ // Redirect back to the HTML page with the 'image_urls' parameter
+   ob_clean();
    header("Location: index.html?image_urls=" . $image_str);
   exit;
-}
 ?>
+
+

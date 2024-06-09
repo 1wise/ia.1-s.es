@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 25-06-2023 00:00
+	// Last edit 08-09-2024 00:00
 	//
     $emRem = '';
     $system_msg = '';
@@ -34,7 +34,11 @@ require_once '@DIRYNOMSENSESMS';
     $somPas = '@SMSPASSWORD';
     $somApi = base64_encode("$somUsu:$somPas");
     $carReg = "@DIRREGISTROS";
+    if ($_POST['aicrypt'] == '') {
+      $aiCry = "@OPENAIAPIKEY";
+    } else {
     $aiCry = $_POST['aicrypt'];
+    }
     $model = $_POST['model'];
     $system_msg = $_POST['system_msg'];
     $user_msg = $_POST['user_msg'];
@@ -86,20 +90,15 @@ require_once '@DIRYNOMSENSESMS';
     }
 
     $anemCrypt =  $emRem.":".$model.":".$aiCry;
-    if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
     $aiUrl = 'https://api.openai.com/v1/chat/completions';
-  } else {
-    $aiUrl = 'https://api.openai.com/v1/completions';
-  }
-
-  $headers = array(
-  'Content-Type: application/json',
-  'Authorization: Bearer ' . $aiCry,
-  );
-
+    $headers = array(
+     'Content-Type: application/json',
+     'Authorization: Bearer ' . $aiCry,
+     );
+  
   // Set the request data
-if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt-3.5-turbo-0613" || $model == "gpt-3.5-turbo-16k-0613" || $model == "gpt-4" || $model == "gpt-4-0613" || $model == "gpt-4-32k" || $model == "gpt-4-32k-0613") {
-    $messages = [];
+
+   $messages = [];
     if (!empty($system_msg)) {
         $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg, "name" => $remAut];
     }
@@ -126,17 +125,7 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
         "presence_penalty" => $presence_penalty,
         "frequency_penalty" => $frequency_penalty,
     );
-  } else {
-      $data = array(
-      "user" => $emRem,
-      "model" => $model,
-      "prompt" =>  $system_msg,
-      'stop' => null,
-      "max_tokens" => $maxtokens,
-      "temperature" => $temperature,
-       );
-   }
-    $intArr = curl_init();
+  $intArr = curl_init();
 
     curl_setopt_array($intArr, array(
     CURLOPT_URL => $aiUrl,
@@ -176,8 +165,8 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
     $aiToken = $decaiRes['usage']['total_tokens'];
     $aiReslim = $aiCont;
     $aimSgem = str_replace(
-    ["?>", "<?", '\"', "\\r", "\\n", "\n\n", "\n\n"],
-    ["?.>", "<.?", '"', "\n", "\n", "\n", "\n"],
+    ['<?','?>','\"', "\\r", "\\n", "\n\n", "\n\n"],
+    ['<.?','?.>','"', "\n", "\n", "\n", "\n"],
     $aiReslim
     );
     $metCrypt = "aes-256-cbc";
@@ -286,34 +275,31 @@ if ($model == "gpt-3.5-turbo" || $model == "gpt-3.5-turbo-16k" || $model == "gpt
     <h1><a href="@URLAPP">Peticion a la API ChatGPT</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
     <input type="text" style="width:440px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
     <select style="font-size:14pt;" name="model" id="model" required>
-     <option value="gpt-4">gpt-4-8k</option>
-     <option value="gpt-4-0613">gpt-4-8k-0613</option>
-     <option value="gpt-4-32k">gpt-4-32k</option>
-     <option value="gpt-4-32k-0613">gpt-4-32k-0613</option>
-     <option value="gpt-3.5-turbo">gpt-3.5-turbo-4k</option>
-     <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-4k-0613</option>
+     <option value="gpt-4o-2024-05-13">gpt-4o-2024-05-13</option>
+     <option value="gpt-4o">gpt-4o</option>
+     <option value="gpt-4-turbo-preview">gpt-4-turbo-preview</option>
+     <option value="gpt-4-turbo-2024-04-09">gpt-4-turbo-2024-04-09</option>
+     <option value="gpt-4-turbo">gpt-4-turbo</option>
+     <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
+     <option value="gpt-4-0613">gpt-4-0613</option>
+     <option value="gpt-4-0125-preview">gpt-4-0125-preview</option>
+     <option value="gpt-4">gpt-4</option>
      <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
-     <option value="text-davinci-003">text-davinci-003</option>
-     <option value="text-davinci-002">text-davinci-002</option>
-     <option value="text-curie-001">text-curie-001</option>
-     <option value="text-babbage-001">text-babbage-001</option>
-     <option value="text-ada-001">text-ada-001</option>
-     <option value="davinci-instruct-beta">davinci-instruct-beta</option>
-     <option value="davinci">davinci</option>
-     <option value="curie-instruct-beta">curie-instruct-beta</option>
-     <option value="curie">curie</option>
-     <option value="babbage">babbage</option>
-     <option value="ada">ada</option>
-    </select><br>
-    <input type="text" style="width:390px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="5" name="maxtokens" value="4096"></lable>&nbsp;
+     <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
+     <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
+     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
+     <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
+     <option value="gpt-3.5-turbo-0125">gpt-3.5-turbo-0125</option>
+     <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+    </select><br><br>
+    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
+    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br><br>
+    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="6" name="maxtokens" value="300"></lable>&nbsp;
     <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;
     <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
     <label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;
     <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
-    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo rellenar este campo" required><?php echo $system_msg; ?></textarea><br>
+    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo rellenar este campo" required><?php echo $system_msg; ?></textarea><br><br>
     <input style="text-align:center; width:570px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO">&nbsp;&nbsp;
     <button type="button" style="width:100px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar</button><br>
     <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php

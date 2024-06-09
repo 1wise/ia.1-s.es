@@ -41,7 +41,7 @@ function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) 
         // Email content
         $mail->isHTML(false);
         $mail->Subject = $emAsu;
-        $emMsg = "\n";
+        $emMsg .= "\n";
         $emMsg .= "Este correo ha sido enviado desde el formulario \n";
         $emMsg .= "@SITURL powered by @EMPRESA.\n";
         $emMsg .= "Consulta a ".$model." via @URLAPP \n";
@@ -53,8 +53,8 @@ function sense_mail($emRem, $emUsr, $model, $system_msg, $emAsu, $miMsg, $emIp) 
         // Send email
         $mail->send();
  
-        $mailLog  = ">".$emIp."<< - >>".$emRem."<< - >>".$emUsr."<< - >>".$model." - ".$now.PHP_EOL;
-
+         $mailLog  = ">".$emIp."<< - >>".$emtoAi."<< - >>".$emUsr."<< - >>".$emDat."<< - >>".$remMsg." - ".$nowForm.PHP_EOL;
+ 
 	file_put_contents('@NOMGPTMAILLOG', $mailLog, FILE_APPEND); 
         echo "Email enviado !!".PHP_EOL;
  

@@ -14,7 +14,7 @@ require_once './sense_sms.php';
 	// Last edit 08-06-2024 00:00
 	//
   $emRem = '';
-  $user_msg = '';
+  $userMsg = '';
   $assistant_msg = '';
   $prompt = '';
   $model = ';)';
@@ -42,7 +42,7 @@ require_once './sense_sms.php';
     $model = $_POST['model'];
     $wise = $_POST['wise'];
     $system_msg = "You're a ChatBot based on the written works and known history of ".$_POST['wise'].", respond as if it would be him, in ".$_POST['estilo']." ".$_POST['idioma']." language in ".$longres." words";
-    $user_msg = $_POST['user_msg'];
+    $userMsg = $_POST['userMsg'];
     $assistant_msg = $_POST['assistant_msg'];
     $prompt = $_POST['prompt'];
     $remNom = $_POST['emrem'];
@@ -74,12 +74,12 @@ require_once './sense_sms.php';
     // Set the request data
     $messages = [];
     if (!empty($system_msg)) {
-        $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg];
+        $messages[] = ["role" => empty($userMsg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg];
     }
-    if (!empty($user_msg)) {
-        $messages[] = ["role" => "user", "content" => $user_msg];
+    if (!empty($userMsg)) {
+        $messages[] = ["role" => "user", "content" => $userMsg];
     }
-    if (!empty($system_msg) && !empty($aimSgem) && !empty($user_msg)) {
+    if (!empty($system_msg) && !empty($aimSgem) && !empty($userMsg)) {
         $messages[] = ["role" => "assistant", "content" => $aimSgem];
     } elseif (!empty($assistant_msg)) {
         $messages[] = ["role" => "assistant", "content" => $assistant_msg];
@@ -143,7 +143,7 @@ require_once './sense_sms.php';
     $ivSize = openssl_cipher_iv_length($metCrypt);
     $iv = substr(md5($anemCrypt), 0, $ivSize);
     $pfCrypt = $carReg.md5($anemCrypt).".log";
-    $datReg = $emRem.": ".$user_msg."\n";
+    $datReg = $emRem.": ".$userMsg."\n";
     if (!empty($assistant_msg)) {
         $datReg .= $wise.": ".$assistant_msg."\n";
     }
@@ -160,7 +160,8 @@ require_once './sense_sms.php';
     }
     if ($emUsr !== '') {
       $emAsu = "Respuesta de ".$wise.", Cortesia de: " . $emRem . " via @EMPRESA ";
-      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$wise.": \n".$user_msg."\n";
+
+      $miMsg = "<->".$emSg."<->\n ".$emRem." pregunta a ".$wise.": \n".$userMsg;
       if (!empty($assistant_msg)) {
           $miMsg .= "\n".$wise.": ".$assistant_msg;
       }
@@ -244,15 +245,14 @@ require_once './sense_sms.php';
 </head>
  <title>Cosulta al Wise</title>
 <body>
-  <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
-    <h1><a href="@URLAPP">Consulta al Wise</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
+  <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data" onsubmit="changeButtonColor()">
+    <h1>Consulta al Wise<a href="https://1-s.es/iabots/chatwise/logcrypt.php" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs</a></h1>
     <select style="font-size:14pt;" name="model" id="model" required>
+     <option value="gpt-4o">gpt-4o</option>
      <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
-     <option value="gpt-4">gpt-4</option>
-     <option value="gpt-4-0613">gpt-4-0613</option>
     </select>
-    <input type="text" style="width:445px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave @EMPRESA"><br>
+    <input type="text" style="width:400px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave de 1wise.es">
+      <input type="text" style="width:40px; hight:30px; font-size:16pt;" id="longres" name="longres" value="600" required><br><br>
      <select style="font-size:14pt;" name="wise" id="wise" required>
      <option value="Lao Tzu">Lao Tzu</option>
      <option value="Sun Tzu">Sun Tzu</option>
@@ -285,13 +285,15 @@ require_once './sense_sms.php';
      <option value="formal">Formal</option>
      <option value="casual">Informal</option>
     </select>
-    <input type="text" style="width:245px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="¿Quien Consulta al Wise?" required><br>
-    <input style="text-align:center; width:680px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta al Wise NO darle cuando esta en ROJO"><br>
-    <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="Escribe aqui tu consulta" required><?php echo $user_msg; ?></textarea><br>
-    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="<?php echo $wise; ?>"><?php echo htmlspecialchars($aimSgem); ?></textarea><br>
-    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="Escribe aqui tu replica"></textarea><br>
+    <input type="text" style="width:265px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario orientativo para el Wise" required><br><br>
+    <input style="text-align:center; width:680px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta al Wise NO darle cuando esta en ROJO"><br><br>
+    <button type="button" style="width:300px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar respuesta</button><br><br>
+    <textarea style="font-size:14px;" class="textbox1" name="userMsg" id="userMsg" placeholder="Escribe aqui tu consulta" required><?php echo $userMsg; ?></textarea><br><br>
+    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="<?php echo $wise; ?>"><?php echo $aimSgem; ?></textarea><br>
+    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="Escribe aqui tu replica"></textarea><br><br>
+    <button type="button" style="width:300px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar conversacion</button><br>
     <textarea style="font-size:14px;" class="textbox2" name="response" id="response" placeholder="<?php echo $wise; ?>" readonly><?php
-        echo $emRem.": ".htmlspecialchars($user_msg)."\n";
+        echo $emRem.": ".htmlspecialchars($userMsg)."\n";
         if (!empty($assistant_msg)) {
             echo $wise.": ".htmlspecialchars($assistant_msg)."\n";
         }
@@ -301,8 +303,6 @@ require_once './sense_sms.php';
         echo $wise.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$now;
     ?></textarea><br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="color: green; font-size:14pt;">Tu Conversacion con : <?php echo $wise; ?></lable><br>
-    <button type="button" style="width:275px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar Conversacion</button>
-    <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button>
     <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
     <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
     <textarea hidden name="aimSgem" id="aimSgem"><?php echo htmlspecialchars($aimSgem); ?></textarea>

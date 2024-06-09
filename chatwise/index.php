@@ -11,7 +11,7 @@ require_once './sense_sms.php';
 	// https://ia.1-s.es/
 	// https://1wise.es
 	// https://www.alawise.es/1-s
-	// Last edit 25-05-2023 00:00
+	// Last edit 08-06-2024 00:00
 	//
   $emRem = '';
   $user_msg = '';
@@ -38,9 +38,10 @@ require_once './sense_sms.php';
     } else {
     $aiCry = $_POST['aicrypt'];
     }
+    $longres = $_POST['longres'];
     $model = $_POST['model'];
     $wise = $_POST['wise'];
-    $system_msg = "You're a ChatBot based on the written works and known history of ".$_POST['wise'].", respond as if it would be him, in ".$_POST['estilo']." ".$_POST['idioma']." language.";
+    $system_msg = "You're a ChatBot based on the written works and known history of ".$_POST['wise'].", respond as if it would be him, in ".$_POST['estilo']." ".$_POST['idioma']." language in ".$longres." words";
     $user_msg = $_POST['user_msg'];
     $assistant_msg = $_POST['assistant_msg'];
     $prompt = $_POST['prompt'];

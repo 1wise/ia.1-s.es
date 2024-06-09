@@ -3,7 +3,7 @@
 	// https://ia.1-s.es/
 	// https://1wise.es
 	// https://www-alawise.es/1-s
-	// Last edit 25-06-2023 00:00
+	// Last edit 08-06-2024 00:00
 	//
 	// Print a standard page header
 	//
@@ -63,7 +63,7 @@
        <label id="nulog">Tu Conversacion con<?php echo ": ".$wise." - "; ?><?php echo " - ".$pfCrypt." - "; ?></lable><br>
        <button type="button" style="width:80px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar</button><br>
        <textarea name="rescrypt" style="font-size:14px;" class="textbox2" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
-       <input type="text" style="width:475px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave @EMPRESA">
+       <input type="text" style="width:480px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave, dejar en blanco para usar Clave de 1wise.es">
        <select style="font-size:14pt;" name="wise" id="wise" required>
         <option value="Lao Tzu">Lao Tzu</option>
         <option value="Sun Tzu">Sun Tzu</option>
@@ -86,7 +86,7 @@
         <option value="Kalevalan Runes">Kalevalan Runes</option>
         <option value="Lao Tzu, Sun Tzu, King Hammurabi, Niccolo Maquiavelli, Kahil Gibrian, Charles Baudelaire, William Shakespeare, Miguel de Cervantes, Timothy Leary, Rudyard Kipling, Dale Carnegie, Thomas Kempis and Dante Alighieri">El Wise</option>
        </select><br>
-       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="¿Quien consulto al Wise?" required><br>
+       <input type="text" style="width:500px; hight:30px; font-size:14pt;" id="emRem" name="emRem" placeholder="Usuario " required><br>
        <input type="submit" style="width:250px; font-size:20pt;"  name="submit" value="Consultar"><br>
    </form>
  <script>

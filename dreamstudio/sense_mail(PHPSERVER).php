@@ -3,7 +3,7 @@
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 17-04-03-2023 00:00
+    // Last edit 08-06-2024 00:00
     //
 function sense_mail($emIp, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $dirImg, $imgUrl, $imageNoms, $imageNom, $mMsg, $mHost, $mUsr, $mPas, $mDe, $mBcc) {
       global $emIp, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $dirImg, $imgUrl, $imageNoms, $imageNom, $mMsg, $mHost, $mUsr, $mPas, $mDe, $mBcc;

@@ -3,7 +3,7 @@
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 16-04-03-2023 00:00
+    // Last edit 08-06-2024 00:00
     //
 require_once '@DIRPHPMAILERSRC/Exception.php';
 require_once '@DIRPHPMAILERSRC/PHPMailer.php';

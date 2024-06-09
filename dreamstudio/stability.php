@@ -9,7 +9,7 @@ require_once '@DIRYNOMSISVARS';
     // http://ia.1-s.es
     // http://1wise.es
     //
-    // Last edit 16-04-03-2023 00:00
+    // Last edit 08-06-2024 00:00
     //
 function wrap_text($text, $max_width = 80) {
     return wordwrap($text, $max_width, "\n", true);
@@ -24,6 +24,7 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
 
     return $output;
 }
+
  if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['submit'] == true) {
     global $emip, $imgUrl, $dirImg, $emtoAi, $emUsr, $emAsu, $miMsg, $remMsg, $imageNoms, $imageNom, $smsNum, $somApi, $mHost, $mUsr, $mPas, $mDe, $mBcc, $mMsg;
 
@@ -121,6 +122,10 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
             $numsimgs = intval($numsimgs) + 1;
             $image_str .= $imgUrl.$nomImg.",";
             $image_log .= $imgUrl.$nomImg."\n<ImagenUrl>\n";
+            // Set the MIME type and data URI scheme for the image
+            $imageMimeType = "image/png";
+            $imageDataUri = "data:".$imageMimeType.";base64,".$image;
+
             sleep(1);
          }
          $emAsu = "Imagen de ".$model." Cortesia de: ".$emtoAi." via ".$sitUrl;
@@ -135,16 +140,17 @@ function add_caption_to_png_metadata($input_file, $output_file, $caption) {
             $image_log .= $imgUrl.$nomImg."\n<ImagenUrl>\n";
            }
          }
+
          $logon = "<Prompt>".PHP_EOL.$emDat.PHP_EOL."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <Peso> ".$weight." <CFG> ".$cfg_scale." <Pas> ".$steps." <Samp> ".$sampler." <Clip> ".$clip." <A> ".$emtoAi." <+>".$nowForm."<+> ;)".PHP_EOL."<ImagenUrl ..seed.png>".PHP_EOL;
          $logNow = $logon.$image_log.PHP_EOL;
          $temp = file_get_contents('@NOMSTABILITYLOG');
          $logFull = $logNow.$temp;
          file_put_contents('@NOMSTABILITYLOG', $logFull);
  } else {
-         echo 'Error: '.$httpcode.PHP_EOL;
-         $emIp = $_SERVER['REMOTE_ADDR'];
-         $logon = "<-->".$httpcode."<->".$seed.$emIp."<->".$emDat."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <Peso> ".$weight." <CFG> ".$cfg_scale." <Pas> ".$steps." <Samp> ".$sampler." <Clip> ".$clip." <A> ".$emtoAi." <+>".$nowForm."<+> ;)".$finishReason."<->".$nowForm.PHP_EOL;
-         file_put_contents('@NOMSTABILITYLOG', $logon, FILE_APPEND); 
+       echo 'Error: '.$httpcode.PHP_EOL;
+       $emIp = $_SERVER['REMOTE_ADDR'];
+       $logon = "<-->".$httpcode."<->".$seed.$emIp."<->".$emDat."<M> ".$model." <T> ".$height."x".$width." <N> ".$numImg." <Peso> ".$weight." <CFG> ".$cfg_scale." <Pas> ".$steps." <Samp> ".$sampler." <Clip> ".$clip." <A> ".$emtoAi." <+>".$nowForm."<+> ;)".$finishReason."<->".$nowForm.PHP_EOL;
+       file_put_contents('@NOMSTABILITYLOG', $logon, FILE_APPEND); 
  }
 
  $aiRes = array(

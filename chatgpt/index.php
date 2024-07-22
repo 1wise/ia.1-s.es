@@ -8,7 +8,7 @@ require_once '@DIRYNOMSENSESMS';
 	// http://ia.1-s.es/
 	// http://1wise.es
 	//
-	// Last edit 08-09-2024 00:00
+	// Last edit 22-07-2024 00:00
 	//
     $emRem = '';
     $system_msg = '';
@@ -98,7 +98,7 @@ require_once '@DIRYNOMSENSESMS';
   
   // Set the request data
 
-   $messages = [];
+    $messages = [];
     if (!empty($system_msg)) {
         $messages[] = ["role" => empty($user_msg) && empty($assistant_msg) && empty($prompt) ? "user" : "system", "content" => $system_msg, "name" => $remAut];
     }
@@ -125,7 +125,8 @@ require_once '@DIRYNOMSENSESMS';
         "presence_penalty" => $presence_penalty,
         "frequency_penalty" => $frequency_penalty,
     );
-  $intArr = curl_init();
+
+    $intArr = curl_init();
 
     curl_setopt_array($intArr, array(
     CURLOPT_URL => $aiUrl,
@@ -224,14 +225,14 @@ require_once '@DIRYNOMSENSESMS';
 <html lang="es">
  <head>
    <meta name="Peticion a GPT" content="width=device-width; height=device-height; charset=utf-8;">
-   <link href='https://fonts.googleapis.com/css?family=Open Sans' rel='stylesheet'>
+   <link href='https://fonts.googleapis.com/css?family=Caladea' rel='stylesheet'>
    <style>
     * {
-    font-family: 'Open Sans';
+    font-family: 'Caladea';
     }
     .textbox1 {
     resize: both;
-    height: 120px;
+    height: 360px;
     width: 680px;
     }
     .button-link {
@@ -268,41 +269,57 @@ require_once '@DIRYNOMSENSESMS';
       100% { transform: rotate(360deg); }
     }
  </style>
+ <script>
+    function pasteClipboard(event) {
+    // Check if the event is a double-click
+    if (event.detail === 2) {
+      // Get the clipboard content
+      navigator.clipboard.readText()
+        .then(text => {
+          // Paste the clipboard content into the input field
+          event.target.value = text;
+        })
+        .catch(err => {
+          console.error('Failed to read clipboard contents: ', err);
+        });
+    }
+  }
+ </script>
 </head>
  <title>Peticion a la API ChatGPT</title>
 <body>
   <form accept-charset="UTF-8" id="request-form" method="post" enctype="multipart/form-data">
     <h1><a href="@URLAPP">Peticion a la API ChatGPT</a><a href="@URLLOGCRYPT@NOMLOGCRYPT" target="_blank" rel="noreferrer noopener" class="button-link">Consultar logs API</a></h1>
-    <input type="text" style="width:440px; hight:30px; font-size:12pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI  dejar en blanco para usar Clave de @EMPRESA">
-    <select style="font-size:14pt;" name="model" id="model" required>
-     <option value="gpt-4o-2024-05-13">gpt-4o-2024-05-13</option>
+    <input type="text" ondblclick="pasteClipboard(event)" style="width:440px; hight:30px; font-size:16pt;" id="aicrypt" name="aicrypt" placeholder="Clave API de OpenAI o '' usar Clave @EMPRESA">
+    <select style="font-size:16pt;" name="model" id="model" required>
      <option value="gpt-4o">gpt-4o</option>
-     <option value="gpt-4-turbo-preview">gpt-4-turbo-preview</option>
-     <option value="gpt-4-turbo-2024-04-09">gpt-4-turbo-2024-04-09</option>
+     <option value="gpt-4o-2024-05-13">gpt-4o-2024-05-13</option>
+     <option value="gpt-4o-mini">gpt-4o-mini</option>
+     <option value="gpt-4o-mini-2024-07-18">gpt-4o-mini-2024-07-18</option>
      <option value="gpt-4-turbo">gpt-4-turbo</option>
-     <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
-     <option value="gpt-4-0613">gpt-4-0613</option>
+     <option value="gpt-4-turbo-2024-04-09">gpt-4-turbo-2024-04-09</option>
+     <option value="gpt-4-turbo-preview">gpt-4-turbo-preview</option>
      <option value="gpt-4-0125-preview">gpt-4-0125-preview</option>
+     <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
      <option value="gpt-4">gpt-4</option>
-     <option value="gpt-3.5-turbo-16k-0613">gpt-3.5-turbo-16k-0613</option>
-     <option value="gpt-3.5-turbo-16k">gpt-3.5-turbo-16k</option>
-     <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
-     <option value="gpt-3.5-turbo-0613">gpt-3.5-turbo-0613</option>
-     <option value="gpt-3.5-turbo-0301">gpt-3.5-turbo-0301</option>
+     <option value="gpt-4-0613">gpt-4-0613</option>
+     <option value="gpt-4-0314">gpt-4-314</option>
      <option value="gpt-3.5-turbo-0125">gpt-3.5-turbo-0125</option>
      <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+     <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
+     <option value="gpt-3.5-turbo-instruct">gpt-3.5-turbo-instruct</option>
     </select><br><br>
-    <input type="text" style="width:400px; hight:30px; font-size:14pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br><br>
-    <label style="font-size:14pt;">M.Tok: <input type="text" style="width:55px; font-size:14pt;" maxlength="6" name="maxtokens" value="300"></lable>&nbsp;
-    <label style="font-size:14pt;">Temp: <input type="text" style="width:50px; font-size:14pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;
-    <label style="font-size:14pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:14pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
-    <label style="font-size:14pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:14pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;
-    <label style="font-size:14pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:14pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
-    <textarea style="font-size:14px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo rellenar este campo" required><?php echo $system_msg; ?></textarea><br><br>
-    <input style="text-align:center; width:570px; font: Arial; font-size:16pt" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO">&nbsp;&nbsp;
-    <button type="button" style="width:100px; hight:30px; font-size:16pt;" id="copyButton" onclick="copyToClipboard()">Copiar</button><br>
-    <textarea name="response" style="font-size:14px;" class="textbox1" readonly><?php
+    <input type="text" ondblclick="pasteClipboard(event)" style="width:390px; hight:30px; font-size:16pt;" id="emrem" name="emrem" value="<?php echo $emRem; ?>" placeholder="Usuario, orientativo para GPT" required>
+    <input type="text" style="width:266px; hight:30px; font-size:16pt;" id="emaut" name="emaut" value="<?php echo $emAut; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br><br>
+    <label style="font-size:16pt;">M.Tok: <input type="text" style="width:70px; font-size:16pt;" maxlength="7" name="maxtokens" value="4024"></lable>&nbsp;
+    <label style="font-size:16pt;">Temp: <input type="text" style="width:50px; font-size:16pt;" maxlength="3" name="temperature" value="0" placeholder="0 2"></lable>&nbsp;
+    <label style="font-size:16pt;" id="top_p">top_p: <input type="text" style="width:50px; font-size:16pt;" id="top_p" maxlength="3" name="top_p" value="0"  placeholder="0 1"></lable>
+    <label style="font-size:16pt;"><i>Pres: </i><input type="text" style="width:50px; font-size:16pt;" id="presence_penalty" maxlength="4" name="presence_penalty" value="0" placeholder="-1 1" ></lable>&nbsp;
+    <label style="font-size:16pt;"><i>Freq: </i><input type="text" style=" width:50px; font-size:16pt;" id="frequency_penalty" maxlength="4" name="frequency_penalty" value="0" placeholder="-1 1"></lable><br>
+    <textarea ondblclick="pasteClipboard(event)" style="font-size:16px;" class="textbox1" name="system_msg" id="system_msg" rows="20" placeholder="Prompt Sistema: para modelos otros que gpt 3.5 y superiores, solo rellenar este campo" required><?php echo $system_msg; ?></textarea><br>
+    <input style="text-align:center; width:570px; font-size:18pt; font-family=caladea;" id="submit" type="submit" name="submit" value="Consulta ChatGPT NO darle cuando esta en ROJO">&nbsp;&nbsp;
+    <button type="button" style="width:100px; hight:30px; font-size:18pt;" id="copyButton" onclick="copyToClipboard()">Copiar</button><br>
+    <textarea name="response" style="font-size:16px;" class="textbox1" readonly><?php
         echo $emRem.": ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($system_msg))."\n";
         if (!empty($user_msg)) {
             echo "User: ".str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($user_msg))."\n";
@@ -315,25 +332,25 @@ require_once '@DIRYNOMSENSESMS';
         }
         echo $model.": ".htmlspecialchars($aimSgem)."\n".$aiPar." - ".$aiProTok." - ".$aiCompTok." - ".$aiToken." - ".$now;
     ?></textarea><br>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _">
+    <input type="text" style="width:266px; hight:30px; font-size:16pt;" id="emautu" name="emautu" value="<?php echo $emAutU; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _">
     <button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyasg" onclick="asgToClipboard()">Copiar respuesta</button><br>
-    <textarea style="font-size:14px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"><?php echo $user_msg; ?></textarea><br>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emauta" name="emauta"value="<?php echo $emAutA; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <textarea style="font-size:14px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"><?php
+    <textarea ondblclick="pasteClipboard(event)" style="font-size:16px;" class="textbox1" name="user_msg" id="user_msg" placeholder="User:"><?php echo $user_msg; ?></textarea><br>
+    <input type="text" style="width:266px; hight:30px; font-size:16pt;" id="emauta" name="emauta"value="<?php echo $emAutA; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <textarea ondblclick="pasteClipboard(event)" style="font-size:16px;" class="textbox1" name="assistant_msg" id="assistant_msg" placeholder="Assistant:"><?php
      if (!empty($_POST['assistant_msg']) || empty($_POST['user_msg'])) {
        echo str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($assistant_msg));
      } else {
        echo htmlspecialchars($aimSgem);
      }
     ?></textarea><br>
-    <input type="text" style="width:266px; hight:30px; font-size:14pt;" id="emautp" name="emautp" value="<?php echo $emAutP; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
-    <textarea style="font-size:14px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"><?php
+    <input type="text" style="width:266px; hight:30px; font-size:16pt;" id="emautp" name="emautp" value="<?php echo $emAutP; ?>" placeholder="Autor mensaje a-z A-Z 0-9 _"><br>
+    <textarea ondblclick="pasteClipboard(event)" style="font-size:16px;" class="textbox1" name="prompt" id="prompt" placeholder="User:"><?php
      if (!empty($_POST['prompt'])) {
         echo str_replace(['<?','?>'],['<.?','?.>'],htmlspecialchars($prompt));
      }
     ?></textarea><br>
-    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:14pt;">Tu Conversacion con : <?php echo $model; ?></lable>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
-    <textarea name="rescrypt" style="font-size:14px;" class="textbox1" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:16pt;">Tu Conversacion con : <?php echo $model; ?></lable>&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" style="width:200px; hight:30px; font-size:16pt;" id="copyleDat" onclick="ToClipboard()">Copiar el log</button><br>
+    <textarea name="rescrypt" style="font-size:16px;" class="textbox1" readonly><?php echo htmlspecialchars($leDatReg); ?></textarea><br>
     <textarea hidden name="aimSgem" id="aimSgem"><?php echo htmlspecialchars($aimSgem); ?></textarea>
     <div id="loader" class="loader" style="display: none;"></div>
  <script>
